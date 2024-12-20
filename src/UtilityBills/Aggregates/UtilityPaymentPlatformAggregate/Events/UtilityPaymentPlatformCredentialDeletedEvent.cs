@@ -1,0 +1,6 @@
+using UtilityBills.Abstractions;
+using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities;
+
+namespace UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Events;
+
+public record UtilityPaymentPlatformCredentialDeletedEvent(UtilityPaymentPlatformCredential Credential) : IDomainEvent;
