@@ -33,7 +33,7 @@ public class SendMessageWithOptionsToUser : IStepBody, IUserStep
             ResizeKeyboard = true
         };
 
-        var message =await _telegramBotClient.SendTextMessageAsync(UserId, Message, replyMarkup: answerOptions);
+        var message =await _telegramBotClient.SendMessage(UserId, Message, replyMarkup: answerOptions);
         SentMessageIds.Add(message.MessageId);
         
         return ExecutionResult.Next();

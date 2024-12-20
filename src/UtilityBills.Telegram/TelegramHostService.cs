@@ -28,7 +28,7 @@ public class TelegramHostService : BackgroundService
     {
         await Task.Yield();
 
-        await _telegramBotClient.SetMyCommandsAsync([
+        await _telegramBotClient.SetMyCommands([
             new BotCommand
             {
                 Command = Command.AddCredentialCommand,

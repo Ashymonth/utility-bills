@@ -31,9 +31,9 @@ public class RequestWaterMeterReadings : IStepBody, IUserStep
 
         IReplyMarkup reply = SkipButtonName == null
             ? new ReplyKeyboardRemove()
-            : new ReplyKeyboardMarkup([new KeyboardButton(SkipButtonName)]);
+            : new ReplyKeyboardMarkup(new[] { new KeyboardButton(SkipButtonName) });
 
-        await _telegramBotClient.SendTextMessageAsync(int.Parse(UserId), WaterMeterReadingsName, replyMarkup: reply);
+        await _telegramBotClient.SendMessage(int.Parse(UserId), WaterMeterReadingsName, replyMarkup: reply);
 
         return ExecutionResult.Next();
     }

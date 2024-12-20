@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>8f0de1c2-4003-4a90-ae5a-d8cdab97b019</UserSecretsId>
@@ -23,17 +23,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.8.17" />
       <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1" />
       <PackageReference Include="Mediator.SourceGenerator" Version="2.1.7">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>

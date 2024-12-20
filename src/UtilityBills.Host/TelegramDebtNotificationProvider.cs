@@ -24,7 +24,7 @@ public class TelegramDebtNotificationProvider : IDebtNotificationProvider
     {
         var paymentLink = _platformToPaymentLinkMap.GetValueOrDefault(platform);
         
-        await _telegramBotClient.SendTextMessageAsync(long.Parse(userId),
+        await _telegramBotClient.SendMessage(long.Parse(userId),
             $"You have debt: {debt} on platform: {platform}",
             replyMarkup: paymentLink is not null
                 ? new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl("Оплатить", paymentLink))

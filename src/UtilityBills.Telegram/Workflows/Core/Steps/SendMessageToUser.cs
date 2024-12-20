@@ -23,7 +23,7 @@ public class SendMessageToUser : IStepBody, IUserStep
 
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
-        _ = await _telegramBotClient.SendTextMessageAsync(UserId, Message, replyMarkup: new ReplyKeyboardRemove());
+        _ = await _telegramBotClient.SendMessage(UserId, Message, replyMarkup: new ReplyKeyboardRemove());
 
         return ExecutionResult.Next();
     }
