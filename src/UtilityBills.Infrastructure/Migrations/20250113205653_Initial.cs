@@ -15,7 +15,7 @@ namespace UtilityBills.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", maxLength: 512, nullable: false)
+                    Id = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,11 +26,11 @@ namespace UtilityBills.Infrastructure.Migrations
                 name: "UtilityPaymentPlatforms",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 64, nullable: false),
-                    Alias = table.Column<string>(type: "TEXT", maxLength: 64, nullable: false),
-                    PlatformType = table.Column<int>(type: "INTEGER", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 64, nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Alias = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    PlatformType = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,17 +41,17 @@ namespace UtilityBills.Infrastructure.Migrations
                 name: "UtilityPaymentPlatformCredentials",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UtilityPaymentPlatformId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 512, nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UtilityPaymentPlatformId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UtilityPaymentPlatformCredentials", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UtilityPaymentPlatformCredentials_UtilityPaymentPlatforms_UtilityPaymentPlatformId",
+                        name: "FK_UtilityPaymentPlatformCredentials_UtilityPaymentPlatforms_U~",
                         column: x => x.UtilityPaymentPlatformId,
                         principalTable: "UtilityPaymentPlatforms",
                         principalColumn: "Id",

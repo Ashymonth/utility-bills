@@ -10,7 +10,7 @@ internal static class DatabaseExtensions
         IConfiguration configuration)
     {
         services.AddDbContext<UtilityBillsDbContext>(builder =>
-            builder.UseSqlite(configuration.GetConnectionString(nameof(UtilityBillsDbContext))));
+            builder.UseNpgsql(configuration.GetConnectionString(nameof(UtilityBillsDbContext))));
 
         
         return services;
