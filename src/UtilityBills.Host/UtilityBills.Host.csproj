@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\KvadoClient\src\KvadoClient\KvadoClient.csproj" />
-      <ProjectReference Include="..\..\..\OrientClient\src\OrientClient\OrientClient.csproj" />
+      <ProjectReference Include="..\clients\KvadoClient\KvadoClient.csproj" />
+      <ProjectReference Include="..\clients\OrientClient\OrientClient.csproj" />
       <ProjectReference Include="..\UtilityBills.Application\UtilityBills.Application.csproj" />
       <ProjectReference Include="..\UtilityBills.Aspire.AppHost\UtilityBills.Aspire.AppHost.ServiceDefaults\UtilityBills.Aspire.AppHost.ServiceDefaults.csproj" />
       <ProjectReference Include="..\UtilityBills.Infrastructure\UtilityBills.Infrastructure.csproj" />

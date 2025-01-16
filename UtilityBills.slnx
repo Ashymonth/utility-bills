@@ -11,8 +11,8 @@
     <Project Path="src\UtilityBills.Aspire.AppHost\UtilityBills.Aspire.AppHost.ServiceDefaults\UtilityBills.Aspire.AppHost.ServiceDefaults.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/clients/">
-    <Project Path="..\KvadoClient\src\KvadoClient\KvadoClient.csproj" Type="Classic C#" />
-    <Project Path="..\OrientClient\src\OrientClient\OrientClient.csproj" Type="Classic C#" />
+    <Project Path="src/clients\KvadoClient\KvadoClient.csproj" Type="Classic C#" />
+    <Project Path="src/clients\OrientClient\OrientClient.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/tests/" />
 </Solution>

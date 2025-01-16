@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using KvadoClient.Clients;
 using KvadoClient.Extensions;
 using Microsoft.EntityFrameworkCore;
 using OrientClient.Extensions;
