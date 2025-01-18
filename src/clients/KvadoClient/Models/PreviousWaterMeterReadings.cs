@@ -2,7 +2,7 @@ namespace KvadoClient.Models;
 
 public class PreviousWaterMeterReadings
 {
-    public double ColdWater { get; init; }
+    public int ColdWater { get; init; }
 
-    public double HotWater { get; init; }
+    public int HotWater { get; init; }
 }

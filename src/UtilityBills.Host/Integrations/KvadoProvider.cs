@@ -65,6 +65,30 @@ internal class KvadoProvider : IKvadoProvider
         }
     }
 
+    public async Task<Result<(WaterMeterReadings hotWater, WaterMeterReadings coldWater)>> GetPreviousWaterMeterReadingsAsync(Email email, Password password, CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _kvadoHttpClient.GetPreviousWaterMeterReadingsAsync(email.Value,
+                password.GetUnprotected(_passwordProtector), ct);
+
+            var hotWater = WaterMeterReadings.Create(result.HotWater);
+            var coldWater = WaterMeterReadings.Create(result.ColdWater);
+
+            if (hotWater.IsFailed || coldWater.IsFailed)
+            {
+                return Result.Fail("Unable to get previous water meter readings");
+            }
+            
+            return Result.Ok((hotWater.Value, coldWater.Value));
+        }
+        catch (Exception e)
+        {
+            _logger?.LogError(e, "Unable to get previouse water meter readings");
+            return Result.Fail(e.Message);
+        }
+    }
+
     public Task<Result<DateOnly>> GetLastDayWhenWaterMeterReadingsWereSent(Email email, Password password,
         CancellationToken ct = default)
     {

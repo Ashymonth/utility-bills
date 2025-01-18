@@ -27,7 +27,7 @@ public class PreviousWaterMeterReadingsParser
         return new PreviousWaterMeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
     }
 
-    private static double GetWaterMeterReadings(HtmlNode waterMeterReadingsRow)
+    private static int GetWaterMeterReadings(HtmlNode waterMeterReadingsRow)
     {
         var waterMeterReadings = waterMeterReadingsRow.Descendants("td")
             ?.Skip(1)
@@ -46,6 +46,6 @@ public class PreviousWaterMeterReadingsParser
         //water meter readings provided in formt like 123 куб.м
         var spaceIndex = waterMeterReadings.IndexOf(' ');
 
-        return Convert.ToDouble(waterMeterReadings[..spaceIndex]);
+        return int.Parse(waterMeterReadings[..spaceIndex]);
     }
 }

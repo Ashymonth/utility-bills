@@ -1,5 +1,8 @@
+using System.Net;
 using FluentResults;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
+using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities;
+using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Services;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 
@@ -19,6 +22,52 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
         _kvadoProvider = kvadoProvider;
     }
 
+    public async Task<Result<WaterMeterReadingsPair>> GetUserPlatformCredentialsAsync(string userId,
+        CancellationToken ct = default)
+    {
+        var platforms = await _platformService.GetPlatformsForWaterMeterReadingsAsync(userId, ct);
+        if (platforms.Count == 0)
+        {
+            throw new InvalidOperationException("Platforms are not set");
+        }
+
+        if (platforms.All(platform => platform.Credentials.Count == 0))
+        {
+            return Result.Fail("User dont have any credentials");
+        }
+
+        var result = new List<WaterMeterReadingsPair>();
+        foreach (var utilityPaymentPlatform in platforms)
+        {
+            var credentialForPlatform = utilityPaymentPlatform.GetUserCredential(userId);
+            if (credentialForPlatform is null)
+            {
+                continue;
+            }
+
+            switch (utilityPaymentPlatform.PlatformType)
+            {
+                // in the kvado platform we can send hot and cold water meter readings
+                case UtilityPaymentPlatformType.Kvado:
+                    var prev = await _kvadoProvider.GetPreviousWaterMeterReadingsAsync(credentialForPlatform.Email,
+                        credentialForPlatform.Password, ct);
+                    result.Add(WaterMeterReadingsPair.Create(prev.Value.hotWater, prev.Value.coldWater));
+                    break;
+               
+            }
+        }
+
+        var maxHotWater = result.MaxBy(pair => pair.HotWater.Value);
+        var maxColdWater = result.MaxBy(pair => pair.ColdWater?.Value);
+
+        if (maxHotWater is null)
+        {
+            return Result.Fail("Unable to get hot water");
+        }
+
+        return Result.Ok(WaterMeterReadingsPair.Create(maxHotWater.HotWater, maxColdWater?.ColdWater));
+    }
+
     public async Task<Result> SendAsync(string userId, WaterMeterReadings hotWater, WaterMeterReadings? coldWater,
         CancellationToken ct = default)
     {
@@ -30,7 +79,7 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
         {
             throw new InvalidOperationException("Platforms are not set");
         }
-        
+
         if (platforms.All(platform => platform.Credentials.Count == 0))
         {
             return Result.Fail("Unable to send water meter readings without any credentials for platform");
@@ -49,13 +98,13 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
             {
                 continue;
             }
-            
+
             var credentialForPlatform = platform.GetUserCredential(userId);
             if (credentialForPlatform is null)
             {
                 continue;
             }
-            
+
             switch (platform.PlatformType)
             {
                 // in the orient platform we can send only hot water meter readings

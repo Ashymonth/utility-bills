@@ -22,7 +22,11 @@ public class SendWaterMeterReadingsStep : IStepBody, IUserStep
 
     public WaterMeterReadings HotWater { get; set; } = null!;
 
+    public WaterMeterReadings PreviousHotWater { get; set; }
+    
     public WaterMeterReadings? ColdWater { get; set; }
+
+    public WaterMeterReadings PreviousColdWater { get; set; }
 
     public Result Result { get; set; } = null!;
 

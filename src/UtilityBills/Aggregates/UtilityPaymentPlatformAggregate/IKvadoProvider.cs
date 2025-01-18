@@ -11,6 +11,9 @@ public interface IKvadoProvider : IDebtProvider
     Task<Result> SendWaterMeterReadingsAsync(Email email, Password password, WaterMeterReadings hotWater,
         WaterMeterReadings coldWater, CancellationToken ct = default);
 
+    Task<Result<(WaterMeterReadings hotWater, WaterMeterReadings coldWater)>> GetPreviousWaterMeterReadingsAsync(
+        Email email, Password password, CancellationToken ct = default);
+
     Task<Result<DateOnly>> GetLastDayWhenWaterMeterReadingsWereSent(Email email, Password password,
         CancellationToken ct = default);
 }

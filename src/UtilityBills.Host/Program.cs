@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using Hangfire.PostgreSql;
 using KvadoClient.Clients;
 using KvadoClient.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,8 @@ builder.Services.AddHangfireServer();
 builder.Services.AddHangfire(configuration =>
 {
     configuration.UseRecommendedSerializerSettings();
-    configuration.UseMemoryStorage();
+    configuration.UsePostgreSqlStorage(options =>
+        options.UseNpgsqlConnection(builder.Configuration.GetConnectionString(nameof(UtilityBillsDbContext))));
 });
 
 builder.AddServiceDefaults();
@@ -66,11 +68,10 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 
-    var manager = scope.ServiceProvider.GetRequiredService<IRecurringJobManagerV2>();
+    var manager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
     var job = scope.ServiceProvider.GetRequiredService<IDebtNotificationManager>();
     Expression<Func<Task>> jobFun = () => job.StartJob(default);
     manager.AddOrUpdate("Debt", jobFun, Cron.Daily(12));
-    manager.TriggerJob("Debt");
 }
 
 app.MapDefaultEndpoints();
