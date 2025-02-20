@@ -14,16 +14,21 @@ public class SendWaterMeterReadingsWorkflowData : IUserStep
     public Result<WaterMeterReadings> HotWater { get; set; } = null!;
 
     public Result<WaterMeterReadingsPair> PreviousWaterMeterReadings { get; set; } = null!;
-    
+
     public Result<WaterMeterReadings> ColdWater { get; set; } = null!;
 
     public Result Result { get; set; } = null!;
+
+    public bool IsProvidedValueValid(Result<WaterMeterReadings> meterReadings)
+    {
+        return meterReadings.IsSuccess && PreviousWaterMeterReadings.Value.HotWater.Value < meterReadings.Value.Value;
+    }
 
     public int GetPrevHotWater()
     {
         return PreviousWaterMeterReadings.Value.HotWater.Value;
     }
-    
+
     public int GetPrevColdWater()
     {
         return PreviousWaterMeterReadings.Value.ColdWater?.Value ?? 0;
