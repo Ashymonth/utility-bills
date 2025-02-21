@@ -1,5 +1,6 @@
 using FluentResults;
 using UtilityBills.Abstractions.Services;
+using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
@@ -11,6 +12,9 @@ public interface IKvadoProvider : IDebtProvider
     Task<Result> SendWaterMeterReadingsAsync(Email email, Password password, WaterMeterReadings hotWater,
         WaterMeterReadings coldWater, CancellationToken ct = default);
 
-    Task<Result<DateOnly>> GetLastDayWhenWaterMeterReadingsWereSent(Email email, Password password,
+    Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingsAsync(
+        Email email, Password password, CancellationToken ct = default);
+    
+    Task<Result<WaterMeterReadingsPair>> GetCurrentWaterMeterReadingsAsync(Email email, Password password,
         CancellationToken ct = default);
 }

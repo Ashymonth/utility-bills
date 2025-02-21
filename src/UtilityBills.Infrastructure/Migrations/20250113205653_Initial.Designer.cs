@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UtilityBills.Infrastructure;
 
 #nullable disable
@@ -12,27 +13,31 @@ using UtilityBills.Infrastructure;
 namespace UtilityBills.Infrastructure.Migrations
 {
     [DbContext(typeof(UtilityBillsDbContext))]
-    [Migration("20240814182003_Test")]
-    partial class Test
+    [Migration("20250113205653_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities.UtilityPaymentPlatformCredential", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("UtilityPaymentPlatformId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.ComplexProperty<Dictionary<string, object>>("Email", "UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities.UtilityPaymentPlatformCredential.Email#Email", b1 =>
                         {
@@ -41,7 +46,7 @@ namespace UtilityBills.Infrastructure.Migrations
                             b1.Property<string>("Value")
                                 .IsRequired()
                                 .HasMaxLength(512)
-                                .HasColumnType("TEXT")
+                                .HasColumnType("character varying(512)")
                                 .HasColumnName("Email");
                         });
 
@@ -50,7 +55,8 @@ namespace UtilityBills.Infrastructure.Migrations
                             b1.IsRequired();
 
                             b1.Property<string>("Value")
-                                .HasColumnType("TEXT")
+                                .IsRequired()
+                                .HasColumnType("text")
                                 .HasColumnName("Password");
                         });
 
@@ -65,25 +71,25 @@ namespace UtilityBills.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<int>("PlatformType")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -94,7 +100,7 @@ namespace UtilityBills.Infrastructure.Migrations
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(512)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(512)");
 
                     b.HasKey("Id");
 

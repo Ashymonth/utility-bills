@@ -27,8 +27,8 @@ public class TelegramHostService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await Task.Yield();
-
-        await _telegramBotClient.SetMyCommandsAsync([
+    
+        await _telegramBotClient.SetMyCommands([
             new BotCommand
             {
                 Command = Command.AddCredentialCommand,

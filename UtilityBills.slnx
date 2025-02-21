@@ -1,0 +1,18 @@
+﻿<Solution>
+  <Folder Name="/src/">
+    <Project Path="src\UtilityBills.Application\UtilityBills.Application.csproj" Type="Classic C#" />
+    <Project Path="src\UtilityBills.Host\UtilityBills.Host.csproj" Type="Classic C#" />
+    <Project Path="src\UtilityBills.Infrastructure\UtilityBills.Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="src\UtilityBills.Telegram\UtilityBills.Telegram.csproj" Type="Classic C#" />
+    <Project Path="src\UtilityBills\UtilityBills.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/src/aspire/">
+    <Project Path="src\UtilityBills.Aspire.AppHost\UtilityBills.Aspire.AppHost.AppHost\UtilityBills.Aspire.AppHost.AppHost.csproj" Type="Classic C#" />
+    <Project Path="src\UtilityBills.Aspire.AppHost\UtilityBills.Aspire.AppHost.ServiceDefaults\UtilityBills.Aspire.AppHost.ServiceDefaults.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/src/clients/">
+    <Project Path="src/clients\KvadoClient\KvadoClient.csproj" Type="Classic C#" />
+    <Project Path="src/clients\OrientClient\OrientClient.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>

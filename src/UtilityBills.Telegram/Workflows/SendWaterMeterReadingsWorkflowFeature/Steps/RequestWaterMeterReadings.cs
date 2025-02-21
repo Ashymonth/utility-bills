@@ -1,5 +1,4 @@
 using Telegram.Bot;
-using Telegram.Bot.Types.ReplyMarkups;
 using UtilityBills.Telegram.Workflows.Core.Abstractions;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
@@ -21,19 +20,12 @@ public class RequestWaterMeterReadings : IStepBody, IUserStep
 
     public string WaterMeterReadingsName { get; set; } = null!;
 
-    public string? SkipButtonName { get; set; } = null!;
-
-
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(UserId);
         ArgumentException.ThrowIfNullOrWhiteSpace(WaterMeterReadingsName);
 
-        IReplyMarkup reply = SkipButtonName == null
-            ? new ReplyKeyboardRemove()
-            : new ReplyKeyboardMarkup([new KeyboardButton(SkipButtonName)]);
-
-        await _telegramBotClient.SendTextMessageAsync(int.Parse(UserId), WaterMeterReadingsName, replyMarkup: reply);
+        await _telegramBotClient.SendMessage(int.Parse(UserId), WaterMeterReadingsName);
 
         return ExecutionResult.Next();
     }

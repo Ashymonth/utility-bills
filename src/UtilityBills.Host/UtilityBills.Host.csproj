@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>8f0de1c2-4003-4a90-ae5a-d8cdab97b019</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\KvadoClient\src\KvadoClient\KvadoClient.csproj" />
-      <ProjectReference Include="..\..\..\OrientClient\src\OrientClient\OrientClient.csproj" />
+      <ProjectReference Include="..\clients\KvadoClient\KvadoClient.csproj" />
+      <ProjectReference Include="..\clients\OrientClient\OrientClient.csproj" />
       <ProjectReference Include="..\UtilityBills.Application\UtilityBills.Application.csproj" />
       <ProjectReference Include="..\UtilityBills.Aspire.AppHost\UtilityBills.Aspire.AppHost.ServiceDefaults\UtilityBills.Aspire.AppHost.ServiceDefaults.csproj" />
       <ProjectReference Include="..\UtilityBills.Infrastructure\UtilityBills.Infrastructure.csproj" />
@@ -20,20 +21,24 @@
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
       </Content>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.8.17" />
       <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1" />
+      <PackageReference Include="Hangfire.PostgreSql" Version="1.20.10" />
       <PackageReference Include="Mediator.SourceGenerator" Version="2.1.7">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>

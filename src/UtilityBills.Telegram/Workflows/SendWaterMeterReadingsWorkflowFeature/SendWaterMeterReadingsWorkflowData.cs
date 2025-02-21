@@ -1,4 +1,5 @@
 using FluentResults;
+using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 using UtilityBills.Telegram.Workflows.Core.Abstractions;
 
@@ -10,9 +11,28 @@ public class SendWaterMeterReadingsWorkflowData : IUserStep
 
     public List<int> SentMessageIds { get; set; } = null!;
 
-    public Result<WaterMeterReadings?> HotWater { get; set; } = null!;
-    
-    public Result<WaterMeterReadings?> ColdWater { get; set; } = null!;
+    public Result<WaterMeterReadings> HotWater { get; set; } = null!;
+
+    public Result<WaterMeterReadingsPair> PreviousWaterMeterReadings { get; set; } = null!;
+
+    public Result<WaterMeterReadings> ColdWater { get; set; } = null!;
 
     public Result Result { get; set; } = null!;
+
+    public bool IsSentWaterMeterReadingsAccepted { get; set; }
+
+    public bool IsHotWaterValid(Result<WaterMeterReadings> meterReadings)
+    {
+        return meterReadings.IsSuccess && PreviousWaterMeterReadings.Value.HotWater.Value < meterReadings.Value.Value;
+    }
+
+    public int GetPrevHotWater()
+    {
+        return PreviousWaterMeterReadings.Value.HotWater.Value;
+    }
+
+    public int GetPrevColdWater()
+    {
+        return PreviousWaterMeterReadings.Value.ColdWater?.Value ?? 0;
+    }
 }

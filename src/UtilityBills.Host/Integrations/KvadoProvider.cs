@@ -2,6 +2,7 @@ using FluentResults;
 using KvadoClient.Clients;
 using UtilityBills.Aggregates;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
+using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Host.Integrations;
@@ -65,10 +66,54 @@ internal class KvadoProvider : IKvadoProvider
         }
     }
 
-    public Task<Result<DateOnly>> GetLastDayWhenWaterMeterReadingsWereSent(Email email, Password password,
+    public async Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingsAsync(Email email, Password password,
         CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var result = await _kvadoHttpClient.GetPreviousWaterMeterReadingsAsync(email.Value,
+                password.GetUnprotected(_passwordProtector), ct);
+
+            var hotWater = WaterMeterReadings.Create(result.HotWater);
+            var coldWater = WaterMeterReadings.Create(result.ColdWater);
+
+            if (hotWater.IsFailed || coldWater.IsFailed)
+            {
+                return Result.Fail("Unable to get previous water meter readings");
+            }
+
+            return Result.Ok(WaterMeterReadingsPair.Create(hotWater.Value, coldWater.Value));
+        }
+        catch (Exception e)
+        {
+            _logger?.LogError(e, "Unable to get previouse water meter readings");
+            return Result.Fail(e.Message);
+        }
+    }
+    
+    public async Task<Result<WaterMeterReadingsPair>> GetCurrentWaterMeterReadingsAsync(Email email, Password password,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _kvadoHttpClient.GetCurrentWaterMeterReadingsAsync(email.Value,
+                password.GetUnprotected(_passwordProtector), ct);
+
+            var hotWater = WaterMeterReadings.Create(result.HotWater);
+            var coldWater = WaterMeterReadings.Create(result.ColdWater);
+
+            if (hotWater.IsFailed || coldWater.IsFailed)
+            {
+                return Result.Fail("Unable to get previous water meter readings");
+            }
+
+            return Result.Ok(WaterMeterReadingsPair.Create(hotWater.Value, coldWater.Value));
+        }
+        catch (Exception e)
+        {
+            _logger?.LogError(e, "Unable to get previous water meter readings");
+            return Result.Fail(e.Message);
+        }
     }
 
     public async Task<decimal?> GetDebtAsync(Email email, Password password, CancellationToken ct = default)

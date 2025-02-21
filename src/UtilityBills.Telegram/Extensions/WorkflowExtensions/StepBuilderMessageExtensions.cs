@@ -20,7 +20,7 @@ public static class StepBuilderMessageExtensions
             .Input(user => user.SentMessageIds, step => step.SentMessageIds)
             .Output(step => step.SentMessageIds, user => user.SentMessageIds);
     }
-    
+
     public static IStepBuilder<TData, SendMessageToUser> SendMessageToUser<TData, TStep>(
         this IStepBuilder<TData, TStep> builder, string message)
         where TData : IUserStep where TStep : IStepBody
@@ -32,8 +32,8 @@ public static class StepBuilderMessageExtensions
             .Input(user => user.SentMessageIds, step => step.SentMessageIds)
             .Output(step => step.SentMessageIds, user => user.SentMessageIds);
     }
- 
-    
+
+
     public static IStepBuilder<TData, SendMessageToUser> SendMessageToUser<TData>(
         this IWorkflowBuilder<TData> builder, Func<TData, string> messageFunc)
         where TData : IUserStep
@@ -45,7 +45,7 @@ public static class StepBuilderMessageExtensions
             .Input(user => user.SentMessageIds, step => step.SentMessageIds)
             .Output(step => step.SentMessageIds, user => user.SentMessageIds);
     }
-    
+
     public static IStepBuilder<TData, SendMessageToUser> SendMessageToUser<TData, TStep>(
         this IStepBuilder<TData, TStep> builder, Func<TData, string> messageFunc)
         where TStep : IStepBody
@@ -58,7 +58,7 @@ public static class StepBuilderMessageExtensions
             .Input(user => user.SentMessageIds, step => step.SentMessageIds)
             .Output(step => step.SentMessageIds, user => user.SentMessageIds);
     }
-    
+
     public static IStepBuilder<TData, WaitFor> WaitForUserMessage<TData, TStep, TOutput>(
         this IStepBuilder<TData, TStep> builder,
         Expression<Func<TData, TOutput>> dataProperty)
@@ -69,7 +69,7 @@ public static class StepBuilderMessageExtensions
             .WaitFor("UserMessage", data => data.UserId, _ => DateTime.UtcNow)
             .Output(dataProperty, step => step.EventData);
     }
-    
+
     public static IStepBuilder<TData, WaitFor> WaitForUserMessage<TData, TStep, TOutput>(
         this IStepBuilder<TData, TStep> builder,
         Expression<Func<TData, TOutput>> dataProperty, Func<UserMessage, TOutput> dataConverter)
@@ -77,8 +77,7 @@ public static class StepBuilderMessageExtensions
         where TData : IUserStep
     {
         return builder
-            .WaitFor("UserMessage", data => data.UserId, _ => DateTime.UtcNow)
+            .WaitFor("UserMessage", (step, context) => step.UserId, _ => DateTime.UtcNow)
             .Output(dataProperty, step => dataConverter((step.EventData as UserMessage)!));
     }
-    
 }

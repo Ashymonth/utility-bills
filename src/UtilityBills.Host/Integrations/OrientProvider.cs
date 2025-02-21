@@ -2,6 +2,7 @@ using FluentResults;
 using OrientClient.Clients;
 using UtilityBills.Aggregates;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
+using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Host.Integrations;
@@ -63,16 +64,32 @@ internal class OrientProvider : IOrientProvider
     {
         try
         {
-            var result = await _orientClient.LastDateWhenHotWaterReadingWasSent(email.Value,
+            var result = await _orientClient.LastDateWhenHotWaterReadingWereSentAsync(email.Value,
                 password.GetUnprotected(_passwordProtector), ct);
 
             return result;
         }
         catch (Exception e)
         {
-            _logger?.LogWarning(e,  
+            _logger?.LogWarning(e,
                 "Unable to get last date when water meter readings were sent for email:{OrientEmail}", email.Value);
             return Result.Fail("Unable to get last date when water meter readings were sent");
+        }
+    }
+
+    public async Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _orientClient.GetPreviousWaterMeterReadingAsync(email.Value,
+                password.GetUnprotected(_passwordProtector), ct);
+
+            return Result.Ok(WaterMeterReadingsPair.Create(WaterMeterReadings.Create(result).Value, null));
+        }
+        catch (Exception e)
+        {
+            return Result.Fail("Unable to get prev hot water meter readings");
         }
     }
 
