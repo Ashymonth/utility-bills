@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<AddSelectedPlatformCredential>();
         services.AddTransient<RequestWaterMeterReadings>();
         services.AddTransient<SendWaterMeterReadingsStep>();
+        services.AddTransient<EnsureWaterMeterReadingsWereSentStep>();
         services.AddTransient<GetPreviousWaterMeterReadingsStep>();
         
         services.AddTransient<SendMessageToUser>();

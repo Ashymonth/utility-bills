@@ -19,7 +19,9 @@ public class SendWaterMeterReadingsWorkflowData : IUserStep
 
     public Result Result { get; set; } = null!;
 
-    public bool IsProvidedValueValid(Result<WaterMeterReadings> meterReadings)
+    public bool IsSentWaterMeterReadingsAccepted { get; set; }
+
+    public bool IsHotWaterValid(Result<WaterMeterReadings> meterReadings)
     {
         return meterReadings.IsSuccess && PreviousWaterMeterReadings.Value.HotWater.Value < meterReadings.Value.Value;
     }

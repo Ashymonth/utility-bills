@@ -33,7 +33,10 @@ public interface IKvadoHttpClient
     /// <returns></returns>
     Task<decimal?> GetDebtAsync(string email, string password, CancellationToken ct = default);
 
-    Task<PreviousWaterMeterReadings> GetPreviousWaterMeterReadingsAsync(string email, string password,
+    Task<WaterMeterReadings> GetPreviousWaterMeterReadingsAsync(string email, string password,
+        CancellationToken ct = default);
+
+    Task<WaterMeterReadings> GetCurrentWaterMeterReadingsAsync(string email, string password,
         CancellationToken ct = default);
 }
 
@@ -82,7 +85,20 @@ public class KvadoHttpClient : IKvadoHttpClient
         return new DebtParser().ParseDebt(content);
     }
 
-    public async Task<PreviousWaterMeterReadings> GetPreviousWaterMeterReadingsAsync(string email, string password,
+    public async Task<WaterMeterReadings> GetCurrentWaterMeterReadingsAsync(string email, string password,
+        CancellationToken ct = default)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/counters");
+        request.SetAuthOptions(email, password);
+        
+        using var response = await _httpClient.SendAsync(request, ct);
+        
+        var page = await response.Content.ReadAsStringAsync(ct);
+
+        return new PreviousWaterMeterReadingsParser().ParseCurrentWaterMeterReadings(page);
+    }
+    
+    public async Task<WaterMeterReadings> GetPreviousWaterMeterReadingsAsync(string email, string password,
         CancellationToken ct = default)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, "/counters");

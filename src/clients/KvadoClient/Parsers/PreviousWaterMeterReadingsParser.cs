@@ -5,11 +5,34 @@ namespace KvadoClient.Parsers;
 
 public class PreviousWaterMeterReadingsParser
 {
-    public PreviousWaterMeterReadings ParsePreviousWaterMeterReadings(string page)
+    public WaterMeterReadings ParseCurrentWaterMeterReadings(string page)
     {
         var document = new HtmlDocument();
         document.LoadHtml(page);
 
+        var counterRows = GetCounterRows(document);
+
+        var coldWater = GetCurrentWaterMeterReadings(counterRows[0]);
+        var hotWaterWater = GetCurrentWaterMeterReadings(counterRows[1]);
+
+        return new WaterMeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
+    }
+    
+    public WaterMeterReadings ParsePreviousWaterMeterReadings(string page)
+    {
+        var document = new HtmlDocument();
+        document.LoadHtml(page);
+
+        var counterRows = GetCounterRows(document);
+
+        var coldWater = GetPreviousWaterMeterReadings(counterRows[0]);
+        var hotWaterWater = GetPreviousWaterMeterReadings(counterRows[1]);
+
+        return new WaterMeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
+    }
+
+    private static HtmlNode[] GetCounterRows(HtmlDocument document)
+    {
         var counterRows = document.GetElementbyId("counters")
             .Descendants("tbody")
             .FirstOrDefault()
@@ -21,13 +44,10 @@ public class PreviousWaterMeterReadingsParser
             throw new Exception();
         }
 
-        var coldWater = GetWaterMeterReadings(counterRows[0]);
-        var hotWaterWater = GetWaterMeterReadings(counterRows[1]);
-
-        return new PreviousWaterMeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
+        return counterRows;
     }
 
-    private static int GetWaterMeterReadings(HtmlNode waterMeterReadingsRow)
+    private static int GetPreviousWaterMeterReadings(HtmlNode waterMeterReadingsRow)
     {
         var waterMeterReadings = waterMeterReadingsRow.Descendants("td")
             ?.Skip(1)
@@ -47,5 +67,26 @@ public class PreviousWaterMeterReadingsParser
         var spaceIndex = waterMeterReadings.IndexOf(' ');
 
         return int.Parse(waterMeterReadings[..spaceIndex]);
+    }
+    
+    private static int GetCurrentWaterMeterReadings(HtmlNode waterMeterReadingsRow)
+    {
+        var waterMeterReadings = waterMeterReadingsRow.Descendants("td")
+            ?.Skip(2)
+            .FirstOrDefault()
+            ?.Descendants("div")
+            ?.FirstOrDefault()
+            ?.Descendants("div")
+            ?.FirstOrDefault()
+            ?.Descendants("input")
+            ?.FirstOrDefault()
+            ?.GetAttributeValue("value", string.Empty);
+
+        if (string.IsNullOrWhiteSpace(waterMeterReadings))
+        {
+            throw new Exception("Cold water meter reading not found");
+        }
+
+        return int.Parse(waterMeterReadings);
     }
 }

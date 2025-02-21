@@ -33,12 +33,12 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
                                              $"Hot water: {data.GetPrevHotWater()}\n" +
                                              $"Cold water: {data.GetPrevColdWater()}"))
             .Output(data => data.UserId, user => user.UserId)
-            .RequestWaterMeterReadings(_localizer.GetString("Input hot water"))     
+            .RequestWaterMeterReadings(_localizer.GetString("Input hot water"))
             .WaitForUserMessage(data => data.HotWater, message => message.ToWaterMeterReadings(_localizer))
-            .While(data => data.IsProvidedValueValid(data.HotWater))
+            .While(data => !data.IsHotWaterValid(data.HotWater))
             .Do(workflowBuilder =>
                 workflowBuilder
-                    .SendMessageToUser(_localizer.GetString("Water meter readings must me a positive number")))
+                    .SendMessageToUser(_localizer.GetString("Water meter readings must me a positive number or greatest that previous value")))
             .While(data => data.HotWater.Value!.Value < data.GetPrevHotWater())
             .Do(workflowBuilder => workflowBuilder.SendMessageToUser(data =>
                 $"Hot water can't be less that previous value. Previous value: {data.GetPrevHotWater()}."))
@@ -48,7 +48,7 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
             .Do(workflowBuilder =>
                 workflowBuilder
                     .SendMessageToUser(_localizer.GetString("Water meter readings must me a positive number")))
-            .While(data => data.ColdWater.Value!.Value < data.GetPrevColdWater() )
+            .While(data => data.ColdWater.Value!.Value < data.GetPrevColdWater())
             .Do(workflowBuilder => workflowBuilder.SendMessageToUser(data =>
                 $"Cold water can't be less that previous value. Previous value: {data.GetPrevColdWater()}."))
             .SendMessageToUser(_localizer.GetString("Input cold water"))
@@ -57,10 +57,17 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
             .Input(step => step.HotWater, data => data.HotWater.Value)
             .Input(step => step.ColdWater, data => data.ColdWater.ValueOrDefault)
             .Output(data => data.Result, step => step.Result)
-            .SendMessageToUser(data =>
-                _localizer.GetString(data.Result.IsSuccess
-                    ? "Water meter readings sent"
-                    : data.Result.Errors.First().Message))
+            .Then<EnsureWaterMeterReadingsWereSentStep>()
+            .Input(step => step.UserId, data => data.UserId)
+            .Input(step => step.HotWater, data => data.HotWater.Value.Value)
+            .Input(step => step.ColdWater, data => data.ColdWater.Value.Value)
+            .Output(data => data.IsSentWaterMeterReadingsAccepted, step => step.IsWaterMeterReadingsEquals)
+            .If(data => data.IsSentWaterMeterReadingsAccepted).Do(workflowBuilder => workflowBuilder.SendMessageToUser(
+                data => $"Water meter readings successfully sent:\n" +
+                        $"How water: {data.HotWater.Value.Value}.\n" +
+                        $"Cold water: {data.ColdWater.Value.Value}.\n")
+                .EndWorkflow())
+            .SendMessageToUser("An error occured while sending water meter readings. Please retry later")
             .EndWorkflow();
     }
 

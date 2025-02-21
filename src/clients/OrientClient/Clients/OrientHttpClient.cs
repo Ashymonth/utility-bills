@@ -52,13 +52,23 @@ public interface IOrientClient
     Task<bool> IsSiteAvailable(string email, string password, CancellationToken ct = default);
 
     /// <summary>
+    /// Get prev sent hot water meter readings.
+    /// </summary>
+    /// <param name="email">User email to log in.</param>
+    /// <param name="password">Use the password to log in.</param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    Task<int> GetPreviousWaterMeterReadingAsync(string email, string password, CancellationToken ct =
+        default);
+
+    /// <summary>
     /// Get the last date when hot water readings were updated.
     /// </summary>
     /// <param name="email">User email to log in.</param>
     /// <param name="password">Use the password to log in.</param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<DateOnly> LastDateWhenHotWaterReadingWasSent(string email, string password,
+    Task<DateOnly> LastDateWhenHotWaterReadingWereSentAsync(string email, string password,
         CancellationToken ct = default);
 }
 
@@ -180,7 +190,7 @@ public class OrientHttpClient : IOrientClient
     }
 
     /// <inheritdoc />
-    public async Task<DateOnly> LastDateWhenHotWaterReadingWasSent(string email, string password, CancellationToken ct =
+    public async Task<int> GetPreviousWaterMeterReadingAsync(string email, string password, CancellationToken ct =
         default)
     {
         string accountId = await _userProvider.GetAccountIdAsync(email, password, ct);
@@ -192,7 +202,24 @@ public class OrientHttpClient : IOrientClient
 
         var page = await response.Content.ReadAsStringAsync(ct);
 
-        return new CountersPageParser().GetLastDateWhenHotWaterReadingWasSent(page);
+        return new CountersPageParser().GetPreviousHotWaterMeterReadings(page);
+    }
+
+    /// <inheritdoc />
+    public async Task<DateOnly> LastDateWhenHotWaterReadingWereSentAsync(string email, string password,
+        CancellationToken ct =
+            default)
+    {
+        string accountId = await _userProvider.GetAccountIdAsync(email, password, ct);
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, string.Format(CountersUrlTemplate, accountId));
+        request.SetAuthOptions(email, password);
+
+        using var response = await _httpClient.SendAsync(request, ct);
+
+        var page = await response.Content.ReadAsStringAsync(ct);
+
+        return new CountersPageParser().GetLastDateWhenHotWaterReadingWereSent(page);
     }
 
     private static FormUrlEncodedContent CreateSendWaterReadingsContent(string token, int hotWater)
@@ -252,7 +279,7 @@ public class OrientHttpClient : IOrientClient
 
         var cookie = accountPageResponse.Headers.GetValues("Set-Cookie")
             .Select(s => s.Substring(0, s.IndexOf(';') + 1)).ToArray();
-        
+
         return (token, [cookie[0] + cookie[1]]);
     }
 }

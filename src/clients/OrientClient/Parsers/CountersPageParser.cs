@@ -22,26 +22,41 @@ internal class CountersPageParser
 
         return token;
     }
-    
-    public DateOnly GetLastDateWhenHotWaterReadingWasSent(string page)
+
+    public int GetPreviousHotWaterMeterReadings(string page)
+    {
+        var previousHotWater = GetTextFromHotWaterMeterReadingsBlock(page, "col-auto block-note ml-auto text-right");
+        
+        return int.Parse(previousHotWater);
+    }
+
+    public DateOnly GetLastDateWhenHotWaterReadingWereSent(string page)
+    {
+        var lastDateText = GetTextFromHotWaterMeterReadingsBlock(page, "col-auto block-note");
+
+        //we remove "от " symbols
+        //example: от 24.01.2024
+
+        var result = lastDateText.AsSpan()[3..];
+
+        return DateOnly.Parse(result);
+    }
+
+    private static string GetTextFromHotWaterMeterReadingsBlock(string page, string className)
     {
         var document = new HtmlDocument();
         document.LoadHtml(page);
 
         var lastDateText = document.DocumentNode.Descendants("div")
-            .LastOrDefault(node => node.GetAttributeValue("class", string.Empty) == "col-auto block-note")
+            .LastOrDefault(node => node.GetAttributeValue("class", string.Empty) == className)
             ?.InnerText
             ?.Trim();
 
         if (string.IsNullOrWhiteSpace(lastDateText))
         {
-            throw new OrientException("Unable last date when hot water reading was sent");
+            throw new OrientException("Unable to parse water meter readings block");
         }
-        
-        //example от 24.01.2024
 
-        var result = lastDateText.AsSpan()[3..];
-
-        return DateOnly.Parse(result);
+        return lastDateText;
     }
 }

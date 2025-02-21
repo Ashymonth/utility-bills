@@ -1,5 +1,4 @@
 using FluentResults;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Services;
 using UtilityBills.Telegram.Workflows.Core.Abstractions;
 using WorkflowCore.Interface;
@@ -7,11 +6,11 @@ using WorkflowCore.Models;
 
 namespace UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature.Steps;
 
-public class GetPreviousWaterMeterReadingsStep : IUserStep, IStepBody
+public class EnsureWaterMeterReadingsWereSentStep : IUserStep, IStepBody
 {
     private readonly IWaterMeterReadingsService _waterMeterReadingsService;
 
-    public GetPreviousWaterMeterReadingsStep(IWaterMeterReadingsService waterMeterReadingsService)
+    public EnsureWaterMeterReadingsWereSentStep(IWaterMeterReadingsService waterMeterReadingsService)
     {
         _waterMeterReadingsService = waterMeterReadingsService;
     }
@@ -20,12 +19,20 @@ public class GetPreviousWaterMeterReadingsStep : IUserStep, IStepBody
 
     public List<int> SentMessageIds { get; set; } = [];
 
-    public Result<WaterMeterReadingsPair> PreviousWaterMeterReadings { get; set; } = null!;
+    public int HotWater { get; set; }
+
+    public int ColdWater { get; set; }
+
+    public bool IsWaterMeterReadingsEquals { get; set; }
 
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
-        PreviousWaterMeterReadings =
-            await _waterMeterReadingsService.GetPreviousWaterMeterReadingsAsync(UserId, context.CancellationToken);
+        var prevValue =
+            await _waterMeterReadingsService.GetCurrentWaterMeterReadingsAsync(UserId, context.CancellationToken);
+
+        IsWaterMeterReadingsEquals = prevValue.Value.HotWater.Value == HotWater &&
+                                     prevValue.Value.ColdWater!.Value == ColdWater;
+
 
         return ExecutionResult.Next();
     }
