@@ -51,7 +51,6 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
             .While(data => data.ColdWater.Value!.Value < data.GetPrevColdWater())
             .Do(workflowBuilder => workflowBuilder.SendMessageToUser(data =>
                 $"Cold water can't be less that previous value. Previous value: {data.GetPrevColdWater()}."))
-            .SendMessageToUser(_localizer.GetString("Input cold water"))
             .Then<SendWaterMeterReadingsStep>()
             .Input(step => step.UserId, data => data.UserId)
             .Input(step => step.HotWater, data => data.HotWater.Value)
