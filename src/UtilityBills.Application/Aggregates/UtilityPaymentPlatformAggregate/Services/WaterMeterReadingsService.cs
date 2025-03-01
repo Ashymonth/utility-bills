@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using FluentResults;
 using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
@@ -25,19 +26,19 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
     public async Task<Result<WaterMeterReadingsPair>> GetCurrentWaterMeterReadingsAsync(string userId,
         CancellationToken ct = default)
     {
-        var result = await GetWaterMeterReadingsAsync(userId, async (platform, credentials) =>
+        var result = await GetWaterMeterReadingsAsync(userId, async (platform, credentials, token) =>
         {
             switch (platform.PlatformType)
             {
                 case UtilityPaymentPlatformType.Kvado:
                     var kvadoPrev = await _kvadoProvider.GetCurrentWaterMeterReadingsAsync(credentials.Email,
-                        credentials.Password, ct);
+                        credentials.Password, token);
 
                     return kvadoPrev.Value;
                 case UtilityPaymentPlatformType.Orient: // in kvado current and previous are equals
                     var orientPrev = await _orientProvider.GetPreviousWaterMeterReadingAsync(
                         credentials.Email,
-                        credentials.Password, ct);
+                        credentials.Password, token);
                     return orientPrev.Value;
                 case UtilityPaymentPlatformType.RusEnergy:
                 default:
@@ -51,20 +52,22 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
     public async Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingsAsync(string userId,
         CancellationToken ct = default)
     {
-        var result = await GetWaterMeterReadingsAsync(userId, async (platform, credentials) =>
+        var result = await GetWaterMeterReadingsAsync(userId, async (platform, credentials, token) =>
         {
             switch (platform.PlatformType)
             {
                 // in the kvado platform we can send hot and cold water meter readings
                 case UtilityPaymentPlatformType.Kvado:
                     var kvadoPrev = await _kvadoProvider.GetPreviousWaterMeterReadingsAsync(credentials.Email,
-                        credentials.Password, ct);
+                        credentials.Password, token);
 
                     return kvadoPrev.Value;
+                
                 case UtilityPaymentPlatformType.Orient:
                     var orientPrev = await _orientProvider.GetPreviousWaterMeterReadingAsync(
                         credentials.Email,
-                        credentials.Password, ct);
+                        credentials.Password, token);
+                
                     return orientPrev.Value;
                 case UtilityPaymentPlatformType.RusEnergy:
                 default:
@@ -99,17 +102,17 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
                 "Unable to send water meter readings because there is no any platforms that allow to send it today");
         }
 
-        foreach (var platform in platforms)
+        await Parallel.ForEachAsync(platforms, ct, async (platform, token) =>
         {
             if (!platform.CanSendMeterReadings(today))
             {
-                continue;
+                return;
             }
 
             var credentialForPlatform = platform.GetUserCredential(userId);
             if (credentialForPlatform is null)
             {
-                continue;
+                return;
             }
 
             switch (platform.PlatformType)
@@ -117,23 +120,24 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
                 // in the orient platform we can send only hot water meter readings
                 case UtilityPaymentPlatformType.Orient:
                     await _orientProvider.SendWaterMeterReadingsAsync(credentialForPlatform.Email,
-                        credentialForPlatform.Password, hotWater, ct);
+                        credentialForPlatform.Password, hotWater, token);
                     break;
                 // in the kvado platform we can send hot and cold water meter readings
                 case UtilityPaymentPlatformType.Kvado when coldWater is not null:
                     await _kvadoProvider.SendWaterMeterReadingsAsync(credentialForPlatform.Email,
-                        credentialForPlatform.Password, hotWater, coldWater, ct);
+                        credentialForPlatform.Password, hotWater, coldWater, token);
                     break;
+                case UtilityPaymentPlatformType.RusEnergy:
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
+        });
 
         return Result.Ok();
     }
 
     private async Task<Result<WaterMeterReadingsPair>> GetWaterMeterReadingsAsync(string userId,
-        Func<UtilityPaymentPlatform, UtilityPaymentPlatformCredential, Task<WaterMeterReadingsPair>>
+        Func<UtilityPaymentPlatform, UtilityPaymentPlatformCredential, CancellationToken, Task<WaterMeterReadingsPair>>
             getWaterMeterReadings,
         CancellationToken ct = default)
     {
@@ -148,17 +152,17 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
             return Result.Fail("User dont have any credentials");
         }
 
-        var result = new List<WaterMeterReadingsPair>();
-        foreach (var utilityPaymentPlatform in platforms)
+        var result = new ConcurrentBag<WaterMeterReadingsPair>();
+        await Parallel.ForEachAsync(platforms, ct, async (platform, token) =>
         {
-            var credentialForPlatform = utilityPaymentPlatform.GetUserCredential(userId);
+            var credentialForPlatform = platform.GetUserCredential(userId);
             if (credentialForPlatform is null)
             {
-                continue;
+                return;
             }
 
-            result.Add(await getWaterMeterReadings(utilityPaymentPlatform, credentialForPlatform));
-        }
+            result.Add(await getWaterMeterReadings(platform, credentialForPlatform, token));
+        });
 
         var maxHotWater = result.MaxBy(pair => pair.HotWater.Value);
         var maxColdWater = result.MaxBy(pair => pair.ColdWater?.Value);
