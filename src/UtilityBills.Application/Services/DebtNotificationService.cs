@@ -32,7 +32,7 @@ public class DebtNotificationService : IDebtNotificationService
     {
         var platforms = await _repository.ListAsync(new GetAllPlatformsWithCredentials(), ct);
 
-        foreach (var platform in platforms)
+        await Parallel.ForEachAsync(platforms, ct, async (platform, token) =>
         {
             var credentials = platform.GetUserCredential(userId);
 
@@ -40,16 +40,16 @@ public class DebtNotificationService : IDebtNotificationService
             {
                 _logger.LogInformation("User: {UserId} don't have credentials for platform: {Platform}", userId,
                     platform.PlatformType);
-                continue;
+                return;
             }
 
             var debtProvider = _debtProviders[platform.PlatformType];
 
-            var debt = await debtProvider.GetDebtAsync(credentials.Email, credentials.Password, ct);
+            var debt = await debtProvider.GetDebtAsync(credentials.Email, credentials.Password, token);
             if (debt.HasValue)
             {
-                await _notificationProvider.NotifyAboutDebtAsync(userId, debt.Value, platform.PlatformType, ct);
+                await _notificationProvider.NotifyAboutDebtAsync(userId, debt.Value, platform.PlatformType, token);
             }
-        }
+        });
     }
 }
