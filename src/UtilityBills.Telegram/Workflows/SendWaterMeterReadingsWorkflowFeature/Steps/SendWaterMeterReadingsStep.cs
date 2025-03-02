@@ -32,7 +32,7 @@ public class SendWaterMeterReadingsStep : IStepBody, IUserStep
 
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
-        Result = await _waterMeterReadingsService.SendAsync(UserId, HotWater, ColdWater, context.CancellationToken);
+        Result = await _waterMeterReadingsService.SendReadingsAsync(UserId, HotWater, ColdWater, context.CancellationToken);
 
         return ExecutionResult.Next();
     }

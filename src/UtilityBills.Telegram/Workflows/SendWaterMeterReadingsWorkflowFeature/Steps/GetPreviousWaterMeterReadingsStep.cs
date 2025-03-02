@@ -25,7 +25,7 @@ public class GetPreviousWaterMeterReadingsStep : IUserStep, IStepBody
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
         PreviousWaterMeterReadings =
-            await _waterMeterReadingsService.GetPreviousWaterMeterReadingsAsync(UserId, context.CancellationToken);
+            await _waterMeterReadingsService.GetPreviousReadingsAsync(UserId, context.CancellationToken);
 
         return ExecutionResult.Next();
     }

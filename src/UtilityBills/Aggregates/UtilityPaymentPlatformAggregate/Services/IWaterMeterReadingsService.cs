@@ -6,11 +6,11 @@ namespace UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Services;
 
 public interface IWaterMeterReadingsService
 {
-    Task<Result<WaterMeterReadingsPair>> GetCurrentWaterMeterReadingsAsync(string userId,
+    Task<Result<WaterMeterReadingsPair>> GetCurrentReadingsAsync(string userId,
         CancellationToken ct = default);
     
-    Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingsAsync(string userId, CancellationToken ct = default);
+    Task<Result<WaterMeterReadingsPair>> GetPreviousReadingsAsync(string userId, CancellationToken ct = default);
     
-    Task<Result> SendAsync(string userId, WaterMeterReadings hotWater, WaterMeterReadings? coldWater,
+    Task<Result> SendReadingsAsync(string userId, WaterMeterReadings hotWater, WaterMeterReadings coldWater,
         CancellationToken ct = default);
 }

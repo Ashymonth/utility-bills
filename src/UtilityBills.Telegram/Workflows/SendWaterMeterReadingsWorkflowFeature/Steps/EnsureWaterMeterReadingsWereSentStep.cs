@@ -28,7 +28,7 @@ public class EnsureWaterMeterReadingsWereSentStep : IUserStep, IStepBody
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
         var prevValue =
-            await _waterMeterReadingsService.GetCurrentWaterMeterReadingsAsync(UserId, context.CancellationToken);
+            await _waterMeterReadingsService.GetCurrentReadingsAsync(UserId, context.CancellationToken);
 
         IsWaterMeterReadingsEquals = prevValue.Value.HotWater.Value == HotWater &&
                                      prevValue.Value.ColdWater!.Value == ColdWater;
