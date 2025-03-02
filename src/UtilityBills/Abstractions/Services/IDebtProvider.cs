@@ -1,4 +1,4 @@
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Abstractions.Services;
 

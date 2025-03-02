@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 using UtilityBills.Telegram.Extensions.WorkflowExtensions;
 using UtilityBills.Telegram.Workflows.AddCredentialWorkflowFeature;
 using UtilityBills.Telegram.Workflows.Core.Models;
-using UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature;
+using UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature;
 using WorkflowCore.Interface;
 
 namespace UtilityBills.Telegram;

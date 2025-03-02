@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using OrientClient.Extensions;
 using UtilityBills.Abstractions.Services;
 using UtilityBills.Aggregates;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
 using UtilityBills.Application.Extensions;
 using UtilityBills.Aspire.AppHost.ServiceDefaults;
 using UtilityBills.Host;
@@ -58,12 +58,12 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<UtilityBillsDbContext>();
     context.Database.Migrate();
-    if (!await context.UtilityPaymentPlatforms.AnyAsync())
+    if (!await context.ReadingPlatforms.AnyAsync())
     {
-        context.UtilityPaymentPlatforms.AddRange([
-            UtilityPaymentPlatform.Create("Ориетн", UtilityPaymentPlatformType.Orient, "Ориент бридж"),
-            UtilityPaymentPlatform.Create("Квадо", UtilityPaymentPlatformType.Kvado, "квадо"),
-            UtilityPaymentPlatform.Create("Рус энерго", UtilityPaymentPlatformType.RusEnergy, "Рус энерго сбыт"),
+        context.ReadingPlatforms.AddRange([
+            ReadingPlatform.Create("Ориетн", ReadingPlatformType.Orient, "Ориент бридж"),
+            ReadingPlatform.Create("Квадо", ReadingPlatformType.Kvado, "квадо"),
+            ReadingPlatform.Create("Рус энерго", ReadingPlatformType.RusEnergy, "Рус энерго сбыт"),
         ]);
         context.SaveChanges();
     }

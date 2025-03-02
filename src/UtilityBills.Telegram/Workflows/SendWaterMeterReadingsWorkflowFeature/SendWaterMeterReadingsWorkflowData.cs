@@ -1,9 +1,9 @@
 using FluentResults;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Models;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 using UtilityBills.Telegram.Workflows.Core.Abstractions;
 
-namespace UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature;
+namespace UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature;
 
 public class SendMeterReadingsWorkflowData : IUserStep
 {

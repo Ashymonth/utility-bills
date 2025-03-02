@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
 
 namespace UtilityBills.Infrastructure.EntityConfigurations;
 
-public class UtilityPaymentPlatformConfiguration : IEntityTypeConfiguration<UtilityPaymentPlatform>
+public class ReadingPlatformConfiguration : IEntityTypeConfiguration<ReadingPlatform>
 {
-    public void Configure(EntityTypeBuilder<UtilityPaymentPlatform> builder)
+    public void Configure(EntityTypeBuilder<ReadingPlatform> builder)
     {
         builder.Property(platform => platform.Name).HasMaxLength(64);
         builder.Property(platform => platform.Alias).HasMaxLength(64);
@@ -17,7 +17,7 @@ public class UtilityPaymentPlatformConfiguration : IEntityTypeConfiguration<Util
 
         builder.HasMany(platform => platform.Credentials)
             .WithOne()
-            .HasForeignKey(credential => credential.UtilityPaymentPlatformId)
+            .HasForeignKey(credential => credential.ReadingPlatformId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
     }

@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Localization;
 using UtilityBills.Telegram.Extensions.WorkflowExtensions;
 using UtilityBills.Telegram.Workflows.Core.Steps;
-using UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature.Extensions;
-using UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature.Steps;
+using UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature.Extensions;
+using UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature.Steps;
 using WorkflowCore.Interface;
 
-namespace UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature;
+namespace UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature;
 
 public class SendMeterReadingsWorkflow : IWorkflow<SendMeterReadingsWorkflowData>
 {

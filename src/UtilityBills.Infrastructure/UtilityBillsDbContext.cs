@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UtilityBills.Abstractions;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
 using UtilityBills.Entities;
 
 namespace UtilityBills.Infrastructure;
@@ -15,10 +15,10 @@ public class UtilityBillsDbContext : DbContext, IUnitOfWork
     
     public DbSet<User> Users => Set<User>();
 
-    public DbSet<UtilityPaymentPlatform> UtilityPaymentPlatforms => Set<UtilityPaymentPlatform>();
+    public DbSet<ReadingPlatform> ReadingPlatforms => Set<ReadingPlatform>();
 
-    public DbSet<UtilityPaymentPlatformCredential> UtilityPaymentPlatformCredentials =>
-        Set<UtilityPaymentPlatformCredential>();
+    public DbSet<ReadingPlatformCredential> ReadingPlatformCredentials =>
+        Set<ReadingPlatformCredential>();
 
     public async Task CommitAsync(CancellationToken ct = default)
     {

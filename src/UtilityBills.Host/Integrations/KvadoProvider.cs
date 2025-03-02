@@ -1,9 +1,9 @@
 using FluentResults;
 using KvadoClient.Clients;
 using UtilityBills.Aggregates;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Models;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Host.Integrations;
 

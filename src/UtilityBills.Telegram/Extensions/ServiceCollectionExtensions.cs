@@ -5,8 +5,8 @@ using UtilityBills.Telegram.Workflows.AddCredentialWorkflowFeature;
 using UtilityBills.Telegram.Workflows.AddCredentialWorkflowFeature.Steps;
 using UtilityBills.Telegram.Workflows.Core;
 using UtilityBills.Telegram.Workflows.Core.Steps;
-using UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature;
-using UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature.Steps;
+using UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature;
+using UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature.Steps;
 using WorkflowCore.Interface;
 
 namespace UtilityBills.Telegram.Extensions;

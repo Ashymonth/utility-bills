@@ -1,15 +1,15 @@
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 using UtilityBills.Abstractions.Services;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
 
 namespace UtilityBills.Host;
 
 public class TelegramDebtNotificationProvider : IDebtNotificationProvider
 {
-    private static readonly Dictionary<UtilityPaymentPlatformType, string> _platformToPaymentLinkMap = new()
+    private static readonly Dictionary<ReadingPlatformType, string> _platformToPaymentLinkMap = new()
     {
-        [UtilityPaymentPlatformType.Kvado] = "https://cabinet.kvado.ru/accruals",
+        [ReadingPlatformType.Kvado] = "https://cabinet.kvado.ru/accruals",
     };
 
     private readonly ITelegramBotClient _telegramBotClient;
@@ -19,7 +19,7 @@ public class TelegramDebtNotificationProvider : IDebtNotificationProvider
         _telegramBotClient = telegramBotClient;
     }
 
-    public async Task NotifyAboutDebtAsync(string userId, decimal debt, UtilityPaymentPlatformType platform,
+    public async Task NotifyAboutDebtAsync(string userId, decimal debt, ReadingPlatformType platform,
         CancellationToken ct = default)
     {
         var paymentLink = _platformToPaymentLinkMap.GetValueOrDefault(platform);

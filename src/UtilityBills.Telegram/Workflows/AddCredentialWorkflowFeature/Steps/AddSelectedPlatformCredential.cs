@@ -1,7 +1,7 @@
 using FluentResults;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Services;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Services;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -9,9 +9,9 @@ namespace UtilityBills.Telegram.Workflows.AddCredentialWorkflowFeature.Steps;
 
 public class AddSelectedPlatformCredential : IStepBody
 {
-    private readonly IUtilityPaymentPlatformService _platformService;
+    private readonly IReadingPlatformService _platformService;
 
-    public AddSelectedPlatformCredential(IUtilityPaymentPlatformService platformService)
+    public AddSelectedPlatformCredential(IReadingPlatformService platformService)
     {
         _platformService = platformService;
     }
@@ -24,7 +24,7 @@ public class AddSelectedPlatformCredential : IStepBody
 
     public string UserId { get; set; } = null!;
 
-    public Result<UtilityPaymentPlatformCredential> CreatedCredentials { get; set; } = null!;
+    public Result<ReadingPlatformCredential> CreatedCredentials { get; set; } = null!;
     
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
