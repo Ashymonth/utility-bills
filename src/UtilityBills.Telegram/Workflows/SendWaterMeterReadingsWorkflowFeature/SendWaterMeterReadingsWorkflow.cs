@@ -7,22 +7,22 @@ using WorkflowCore.Interface;
 
 namespace UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature;
 
-public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWorkflowData>
+public class SendMeterReadingsWorkflow : IWorkflow<SendMeterReadingsWorkflowData>
 {
-    private readonly IStringLocalizer<SendWaterMeterReadingsWorkflow> _localizer;
+    private readonly IStringLocalizer<SendMeterReadingsWorkflow> _localizer;
 
-    public SendWaterMeterReadingsWorkflow(IStringLocalizer<SendWaterMeterReadingsWorkflow> localizer)
+    public SendMeterReadingsWorkflow(IStringLocalizer<SendMeterReadingsWorkflow> localizer)
     {
         _localizer = localizer;
     }
 
-    public void Build(IWorkflowBuilder<SendWaterMeterReadingsWorkflowData> builder)
+    public void Build(IWorkflowBuilder<SendMeterReadingsWorkflowData> builder)
     {
         builder
-            .StartWith<GetPreviousWaterMeterReadingsStep>()
+            .StartWith<GetPreviousMeterReadingsStep>()
             .Input(step => step.UserId, data => data.UserId)
-            .Output(data => data.PreviousWaterMeterReadings, step => step.PreviousWaterMeterReadings)
-            .If(data => data.PreviousWaterMeterReadings.IsFailed)
+            .Output(data => data.PreviousMeterReadings, step => step.PreviousMeterReadings)
+            .If(data => data.PreviousMeterReadings.IsFailed)
             .Do(workflowBuilder => workflowBuilder.SendMessageToUser("Unable to get previous water meter readings.")
                 .EndWorkflow())
             .Then<SendMessageToUser>()
@@ -33,8 +33,8 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
                                              $"Hot water: {data.GetPrevHotWater()}\n" +
                                              $"Cold water: {data.GetPrevColdWater()}"))
             .Output(data => data.UserId, user => user.UserId)
-            .RequestWaterMeterReadings(_localizer.GetString("Input hot water"))
-            .WaitForUserMessage(data => data.HotWater, message => message.ToWaterMeterReadings(_localizer))
+            .RequestMeterReadings(_localizer.GetString("Input hot water"))
+            .WaitForUserMessage(data => data.HotWater, message => message.ToMeterReadings(_localizer))
             .While(data => !data.IsHotWaterValid(data.HotWater))
             .Do(workflowBuilder =>
                 workflowBuilder
@@ -43,7 +43,7 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
             .Do(workflowBuilder => workflowBuilder.SendMessageToUser(data =>
                 $"Hot water can't be less that previous value. Previous value: {data.GetPrevHotWater()}."))
             .SendMessageToUser(_localizer.GetString("Input cold water"))
-            .WaitForUserMessage(data => data.ColdWater, message => message.ToWaterMeterReadings(_localizer))
+            .WaitForUserMessage(data => data.ColdWater, message => message.ToMeterReadings(_localizer))
             .While(data => data.ColdWater.IsFailed)
             .Do(workflowBuilder =>
                 workflowBuilder
@@ -51,17 +51,17 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
             .While(data => data.ColdWater.Value!.Value < data.GetPrevColdWater())
             .Do(workflowBuilder => workflowBuilder.SendMessageToUser(data =>
                 $"Cold water can't be less that previous value. Previous value: {data.GetPrevColdWater()}."))
-            .Then<SendWaterMeterReadingsStep>()
+            .Then<SendMeterReadingsStep>()
             .Input(step => step.UserId, data => data.UserId)
             .Input(step => step.HotWater, data => data.HotWater.Value)
             .Input(step => step.ColdWater, data => data.ColdWater.ValueOrDefault)
             .Output(data => data.Result, step => step.Result)
-            .Then<EnsureWaterMeterReadingsWereSentStep>()
+            .Then<EnsureMeterReadingsWereSentStep>()
             .Input(step => step.UserId, data => data.UserId)
             .Input(step => step.HotWater, data => data.HotWater.Value.Value)
             .Input(step => step.ColdWater, data => data.ColdWater.Value.Value)
-            .Output(data => data.IsSentWaterMeterReadingsAccepted, step => step.IsWaterMeterReadingsEquals)
-            .If(data => data.IsSentWaterMeterReadingsAccepted).Do(workflowBuilder => workflowBuilder.SendMessageToUser(
+            .Output(data => data.IsSentMeterReadingsAccepted, step => step.IsMeterReadingsEquals)
+            .If(data => data.IsSentMeterReadingsAccepted).Do(workflowBuilder => workflowBuilder.SendMessageToUser(
                 data => $"Water meter readings successfully sent:\n" +
                         $"How water: {data.HotWater.Value.Value}.\n" +
                         $"Cold water: {data.ColdWater.Value.Value}.\n")
@@ -70,7 +70,7 @@ public class SendWaterMeterReadingsWorkflow : IWorkflow<SendWaterMeterReadingsWo
             .EndWorkflow();
     }
 
-    public string Id => nameof(SendWaterMeterReadingsWorkflow);
+    public string Id => nameof(SendMeterReadingsWorkflow);
 
     public int Version => 1;
 }

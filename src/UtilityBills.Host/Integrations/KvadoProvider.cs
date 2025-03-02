@@ -1,9 +1,9 @@
 using FluentResults;
 using KvadoClient.Clients;
 using UtilityBills.Aggregates;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Models;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Host.Integrations;
 
@@ -42,8 +42,8 @@ internal class KvadoProvider : IKvadoProvider
         }
     }
 
-    public async Task<Result> SendWaterMeterReadingsAsync(Email email, Password password, WaterMeterReadings hotWater,
-        WaterMeterReadings coldWater, CancellationToken ct = default)
+    public async Task<Result> SendMeterReadingsAsync(Email email, Password password, MeterReadings hotWater,
+        MeterReadings coldWater, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(email);
         ArgumentNullException.ThrowIfNull(password);
@@ -66,23 +66,23 @@ internal class KvadoProvider : IKvadoProvider
         }
     }
 
-    public async Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingsAsync(Email email, Password password,
+    public async Task<Result<MeterReadingsPair>> GetPreviousMeterReadingsAsync(Email email, Password password,
         CancellationToken ct = default)
     {
         try
         {
-            var result = await _kvadoHttpClient.GetPreviousWaterMeterReadingsAsync(email.Value,
+            var result = await _kvadoHttpClient.GetPreviousMeterReadingsAsync(email.Value,
                 password.GetUnprotected(_passwordProtector), ct);
 
-            var hotWater = WaterMeterReadings.Create(result.HotWater);
-            var coldWater = WaterMeterReadings.Create(result.ColdWater);
+            var hotWater = MeterReadings.Create(result.HotWater);
+            var coldWater = MeterReadings.Create(result.ColdWater);
 
             if (hotWater.IsFailed || coldWater.IsFailed)
             {
                 return Result.Fail("Unable to get previous water meter readings");
             }
 
-            return Result.Ok(WaterMeterReadingsPair.Create(hotWater.Value, coldWater.Value));
+            return Result.Ok(MeterReadingsPair.Create(hotWater.Value, coldWater.Value));
         }
         catch (Exception e)
         {
@@ -91,23 +91,23 @@ internal class KvadoProvider : IKvadoProvider
         }
     }
     
-    public async Task<Result<WaterMeterReadingsPair>> GetCurrentWaterMeterReadingsAsync(Email email, Password password,
+    public async Task<Result<MeterReadingsPair>> GetCurrentMeterReadingsAsync(Email email, Password password,
         CancellationToken ct = default)
     {
         try
         {
-            var result = await _kvadoHttpClient.GetCurrentWaterMeterReadingsAsync(email.Value,
+            var result = await _kvadoHttpClient.GetCurrentMeterReadingsAsync(email.Value,
                 password.GetUnprotected(_passwordProtector), ct);
 
-            var hotWater = WaterMeterReadings.Create(result.HotWater);
-            var coldWater = WaterMeterReadings.Create(result.ColdWater);
+            var hotWater = MeterReadings.Create(result.HotWater);
+            var coldWater = MeterReadings.Create(result.ColdWater);
 
             if (hotWater.IsFailed || coldWater.IsFailed)
             {
                 return Result.Fail("Unable to get previous water meter readings");
             }
 
-            return Result.Ok(WaterMeterReadingsPair.Create(hotWater.Value, coldWater.Value));
+            return Result.Ok(MeterReadingsPair.Create(hotWater.Value, coldWater.Value));
         }
         catch (Exception e)
         {

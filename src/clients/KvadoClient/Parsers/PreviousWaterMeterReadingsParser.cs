@@ -3,32 +3,32 @@ using KvadoClient.Models;
 
 namespace KvadoClient.Parsers;
 
-public class PreviousWaterMeterReadingsParser
+public class PreviousMeterReadingsParser
 {
-    public WaterMeterReadings ParseCurrentWaterMeterReadings(string page)
+    public MeterReadings ParseCurrentMeterReadings(string page)
     {
         var document = new HtmlDocument();
         document.LoadHtml(page);
 
         var counterRows = GetCounterRows(document);
 
-        var coldWater = GetCurrentWaterMeterReadings(counterRows[0]);
-        var hotWaterWater = GetCurrentWaterMeterReadings(counterRows[1]);
+        var coldWater = GetCurrentMeterReadings(counterRows[0]);
+        var hotWaterWater = GetCurrentMeterReadings(counterRows[1]);
 
-        return new WaterMeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
+        return new MeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
     }
     
-    public WaterMeterReadings ParsePreviousWaterMeterReadings(string page)
+    public MeterReadings ParsePreviousMeterReadings(string page)
     {
         var document = new HtmlDocument();
         document.LoadHtml(page);
 
         var counterRows = GetCounterRows(document);
 
-        var coldWater = GetPreviousWaterMeterReadings(counterRows[0]);
-        var hotWaterWater = GetPreviousWaterMeterReadings(counterRows[1]);
+        var coldWater = GetPreviousMeterReadings(counterRows[0]);
+        var hotWaterWater = GetPreviousMeterReadings(counterRows[1]);
 
-        return new WaterMeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
+        return new MeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
     }
 
     private static HtmlNode[] GetCounterRows(HtmlDocument document)
@@ -47,9 +47,9 @@ public class PreviousWaterMeterReadingsParser
         return counterRows;
     }
 
-    private static int GetPreviousWaterMeterReadings(HtmlNode waterMeterReadingsRow)
+    private static int GetPreviousMeterReadings(HtmlNode MeterReadingsRow)
     {
-        var waterMeterReadings = waterMeterReadingsRow.Descendants("td")
+        var MeterReadings = MeterReadingsRow.Descendants("td")
             ?.Skip(1)
             .FirstOrDefault()
             ?.Descendants("p")
@@ -58,20 +58,20 @@ public class PreviousWaterMeterReadingsParser
             ?.FirstOrDefault()
             ?.InnerText;
 
-        if (string.IsNullOrWhiteSpace(waterMeterReadings))
+        if (string.IsNullOrWhiteSpace(MeterReadings))
         {
             throw new Exception("Cold water meter reading not found");
         }
 
         //water meter readings provided in formt like 123 куб.м
-        var spaceIndex = waterMeterReadings.IndexOf(' ');
+        var spaceIndex = MeterReadings.IndexOf(' ');
 
-        return int.Parse(waterMeterReadings[..spaceIndex]);
+        return int.Parse(MeterReadings[..spaceIndex]);
     }
     
-    private static int GetCurrentWaterMeterReadings(HtmlNode waterMeterReadingsRow)
+    private static int GetCurrentMeterReadings(HtmlNode MeterReadingsRow)
     {
-        var waterMeterReadings = waterMeterReadingsRow.Descendants("td")
+        var MeterReadings = MeterReadingsRow.Descendants("td")
             ?.Skip(2)
             .FirstOrDefault()
             ?.Descendants("div")
@@ -82,11 +82,11 @@ public class PreviousWaterMeterReadingsParser
             ?.FirstOrDefault()
             ?.GetAttributeValue("value", string.Empty);
 
-        if (string.IsNullOrWhiteSpace(waterMeterReadings))
+        if (string.IsNullOrWhiteSpace(MeterReadings))
         {
             throw new Exception("Cold water meter reading not found");
         }
 
-        return int.Parse(waterMeterReadings);
+        return int.Parse(MeterReadings);
     }
 }

@@ -5,11 +5,11 @@ using WorkflowCore.Models;
 
 namespace UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature.Steps;
 
-public class RequestWaterMeterReadings : IStepBody, IUserStep
+public class RequestMeterReadings : IStepBody, IUserStep
 {
     private readonly ITelegramBotClient _telegramBotClient;
 
-    public RequestWaterMeterReadings(ITelegramBotClient telegramBotClient)
+    public RequestMeterReadings(ITelegramBotClient telegramBotClient)
     {
         _telegramBotClient = telegramBotClient;
     }
@@ -18,14 +18,14 @@ public class RequestWaterMeterReadings : IStepBody, IUserStep
 
     public List<int> SentMessageIds { get; set; } = [];
 
-    public string WaterMeterReadingsName { get; set; } = null!;
+    public string MeterReadingsName { get; set; } = null!;
 
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(UserId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(WaterMeterReadingsName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(MeterReadingsName);
 
-        await _telegramBotClient.SendMessage(int.Parse(UserId), WaterMeterReadingsName);
+        await _telegramBotClient.SendMessage(int.Parse(UserId), MeterReadingsName);
 
         return ExecutionResult.Next();
     }

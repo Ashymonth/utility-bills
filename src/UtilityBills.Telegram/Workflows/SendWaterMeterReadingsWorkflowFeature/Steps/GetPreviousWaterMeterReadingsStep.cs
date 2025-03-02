@@ -1,31 +1,31 @@
 using FluentResults;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Services;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Models;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Services;
 using UtilityBills.Telegram.Workflows.Core.Abstractions;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
 namespace UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature.Steps;
 
-public class GetPreviousWaterMeterReadingsStep : IUserStep, IStepBody
+public class GetPreviousMeterReadingsStep : IUserStep, IStepBody
 {
-    private readonly IWaterMeterReadingsService _waterMeterReadingsService;
+    private readonly IMeterReadingsService _MeterReadingsService;
 
-    public GetPreviousWaterMeterReadingsStep(IWaterMeterReadingsService waterMeterReadingsService)
+    public GetPreviousMeterReadingsStep(IMeterReadingsService MeterReadingsService)
     {
-        _waterMeterReadingsService = waterMeterReadingsService;
+        _MeterReadingsService = MeterReadingsService;
     }
 
     public string UserId { get; set; } = null!;
 
     public List<int> SentMessageIds { get; set; } = [];
 
-    public Result<WaterMeterReadingsPair> PreviousWaterMeterReadings { get; set; } = null!;
+    public Result<MeterReadingsPair> PreviousMeterReadings { get; set; } = null!;
 
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
-        PreviousWaterMeterReadings =
-            await _waterMeterReadingsService.GetPreviousWaterMeterReadingsAsync(UserId, context.CancellationToken);
+        PreviousMeterReadings =
+            await _MeterReadingsService.GetPreviousReadingsAsync(UserId, context.CancellationToken);
 
         return ExecutionResult.Next();
     }

@@ -1,38 +1,38 @@
 using FluentResults;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Models;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 using UtilityBills.Telegram.Workflows.Core.Abstractions;
 
 namespace UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature;
 
-public class SendWaterMeterReadingsWorkflowData : IUserStep
+public class SendMeterReadingsWorkflowData : IUserStep
 {
     public string UserId { get; set; } = null!;
 
     public List<int> SentMessageIds { get; set; } = null!;
 
-    public Result<WaterMeterReadings> HotWater { get; set; } = null!;
+    public Result<MeterReadings> HotWater { get; set; } = null!;
 
-    public Result<WaterMeterReadingsPair> PreviousWaterMeterReadings { get; set; } = null!;
+    public Result<MeterReadingsPair> PreviousMeterReadings { get; set; } = null!;
 
-    public Result<WaterMeterReadings> ColdWater { get; set; } = null!;
+    public Result<MeterReadings> ColdWater { get; set; } = null!;
 
     public Result Result { get; set; } = null!;
 
-    public bool IsSentWaterMeterReadingsAccepted { get; set; }
+    public bool IsSentMeterReadingsAccepted { get; set; }
 
-    public bool IsHotWaterValid(Result<WaterMeterReadings> meterReadings)
+    public bool IsHotWaterValid(Result<MeterReadings> meterReadings)
     {
-        return meterReadings.IsSuccess && PreviousWaterMeterReadings.Value.HotWater.Value < meterReadings.Value.Value;
+        return meterReadings.IsSuccess && PreviousMeterReadings.Value.HotWater.Value < meterReadings.Value.Value;
     }
 
     public int GetPrevHotWater()
     {
-        return PreviousWaterMeterReadings.Value.HotWater.Value;
+        return PreviousMeterReadings.Value.HotWater.Value;
     }
 
     public int GetPrevColdWater()
     {
-        return PreviousWaterMeterReadings.Value.ColdWater?.Value ?? 0;
+        return PreviousMeterReadings.Value.ColdWater?.Value ?? 0;
     }
 }

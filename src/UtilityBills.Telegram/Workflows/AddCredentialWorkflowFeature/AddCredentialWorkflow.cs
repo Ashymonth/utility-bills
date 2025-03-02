@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Localization;
 using UtilityBills.Aggregates;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 using UtilityBills.Telegram.Extensions.WorkflowExtensions;
 using UtilityBills.Telegram.Workflows.AddCredentialWorkflowFeature.Steps;
 using UtilityBills.Telegram.Workflows.Core.Models;
@@ -28,7 +28,7 @@ public class AddCredentialWorkflow : IWorkflow<AddCredentialWorkflowData>
             .Input(list => list.SentMessageIds, data => data.SentMessageIds)
             .Output(data => data.UserId, list => list.UserId)
             .Output(data => data.SentMessageIds, list => list.SentMessageIds)
-            .Output(data => data.UtilityPaymentPlatforms, list => list.UtilityPaymentPlatforms)
+            .Output(data => data.ReadingPlatforms, list => list.ReadingPlatforms)
             .SendInlineData(_localizer.GetString("Select platform for which you want to add credentials"),
                 data => data.GetButtonsToSelectPlatform().ToArray())
             .WaitForUserInlineData(data => data.PlatformId, o => Guid.Parse((o as UserMessage)!.Message))

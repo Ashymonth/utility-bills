@@ -25,10 +25,10 @@ public static class ServiceCollectionExtensions
         
         services.AddTransient<LoadUtilityPlatformList>();
         services.AddTransient<AddSelectedPlatformCredential>();
-        services.AddTransient<RequestWaterMeterReadings>();
-        services.AddTransient<SendWaterMeterReadingsStep>();
-        services.AddTransient<EnsureWaterMeterReadingsWereSentStep>();
-        services.AddTransient<GetPreviousWaterMeterReadingsStep>();
+        services.AddTransient<RequestMeterReadings>();
+        services.AddTransient<SendMeterReadingsStep>();
+        services.AddTransient<EnsureMeterReadingsWereSentStep>();
+        services.AddTransient<GetPreviousMeterReadingsStep>();
         
         services.AddTransient<SendMessageToUser>();
         services.AddTransient<SendMessageWithOptionsToUser>();
@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
         var workflowHost = app.GetRequiredService<IWorkflowHost>();
 
         workflowHost.RegisterWorkflow<AddCredentialWorkflow, AddCredentialWorkflowData>();
-        workflowHost.RegisterWorkflow<SendWaterMeterReadingsWorkflow, SendWaterMeterReadingsWorkflowData>();
+        workflowHost.RegisterWorkflow<SendMeterReadingsWorkflow, SendMeterReadingsWorkflowData>();
         workflowHost.Start();
     }
 }

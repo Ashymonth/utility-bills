@@ -1,13 +1,13 @@
 using FluentResults;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
 
 namespace UtilityBills.Aggregates;
 
 public interface ICredentialsValidator
 {
-    UtilityPaymentPlatformType PlatformType { get; }
+    ReadingPlatformType PlatformType { get; }
 
-    Task<Result<UtilityPaymentPlatformCredential>> ValidateAsync(UtilityPaymentPlatformCredential credential,
+    Task<Result<ReadingPlatformCredential>> ValidateAsync(ReadingPlatformCredential credential,
         CancellationToken ct = default);
 }

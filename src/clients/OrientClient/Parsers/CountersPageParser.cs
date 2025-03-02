@@ -23,16 +23,16 @@ internal class CountersPageParser
         return token;
     }
 
-    public int GetPreviousHotWaterMeterReadings(string page)
+    public int GetPreviousHotMeterReadings(string page)
     {
-        var previousHotWater = GetTextFromHotWaterMeterReadingsBlock(page, "col-auto block-note ml-auto text-right");
+        var previousHotWater = GetTextFromHotMeterReadingsBlock(page, "col-auto block-note ml-auto text-right");
         
         return int.Parse(previousHotWater);
     }
 
     public DateOnly GetLastDateWhenHotWaterReadingWereSent(string page)
     {
-        var lastDateText = GetTextFromHotWaterMeterReadingsBlock(page, "col-auto block-note");
+        var lastDateText = GetTextFromHotMeterReadingsBlock(page, "col-auto block-note");
 
         //we remove "от " symbols
         //example: от 24.01.2024
@@ -42,7 +42,7 @@ internal class CountersPageParser
         return DateOnly.Parse(result);
     }
 
-    private static string GetTextFromHotWaterMeterReadingsBlock(string page, string className)
+    private static string GetTextFromHotMeterReadingsBlock(string page, string className)
     {
         var document = new HtmlDocument();
         document.LoadHtml(page);

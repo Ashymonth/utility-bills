@@ -202,7 +202,7 @@ public class OrientHttpClient : IOrientClient
 
         var page = await response.Content.ReadAsStringAsync(ct);
 
-        return new CountersPageParser().GetPreviousHotWaterMeterReadings(page);
+        return new CountersPageParser().GetPreviousHotMeterReadings(page);
     }
 
     /// <inheritdoc />

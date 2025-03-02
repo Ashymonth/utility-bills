@@ -23,7 +23,7 @@ namespace UtilityBills.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities.UtilityPaymentPlatformCredential", b =>
+            modelBuilder.Entity("UtilityBills.Aggregates.ReadingPlatformAggregate.Entities.ReadingPlatformCredential", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,10 +33,10 @@ namespace UtilityBills.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UtilityPaymentPlatformId")
+                    b.Property<Guid>("ReadingPlatformId")
                         .HasColumnType("uuid");
 
-                    b.ComplexProperty<Dictionary<string, object>>("Email", "UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities.UtilityPaymentPlatformCredential.Email#Email", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Email", "UtilityBills.Aggregates.ReadingPlatformAggregate.Entities.ReadingPlatformCredential.Email#Email", b1 =>
                         {
                             b1.IsRequired();
 
@@ -47,7 +47,7 @@ namespace UtilityBills.Infrastructure.Migrations
                                 .HasColumnName("Email");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("Password", "UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities.UtilityPaymentPlatformCredential.Password#Password", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Password", "UtilityBills.Aggregates.ReadingPlatformAggregate.Entities.ReadingPlatformCredential.Password#Password", b1 =>
                         {
                             b1.IsRequired();
 
@@ -59,12 +59,12 @@ namespace UtilityBills.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UtilityPaymentPlatformId");
+                    b.HasIndex("ReadingPlatformId");
 
-                    b.ToTable("UtilityPaymentPlatformCredentials");
+                    b.ToTable("ReadingPlatformCredentials");
                 });
 
-            modelBuilder.Entity("UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.UtilityPaymentPlatform", b =>
+            modelBuilder.Entity("UtilityBills.Aggregates.ReadingPlatformAggregate.ReadingPlatform", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,7 +90,7 @@ namespace UtilityBills.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UtilityPaymentPlatforms");
+                    b.ToTable("ReadingPlatforms");
                 });
 
             modelBuilder.Entity("UtilityBills.Entities.User", b =>
@@ -104,16 +104,16 @@ namespace UtilityBills.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Entities.UtilityPaymentPlatformCredential", b =>
+            modelBuilder.Entity("UtilityBills.Aggregates.ReadingPlatformAggregate.Entities.ReadingPlatformCredential", b =>
                 {
-                    b.HasOne("UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.UtilityPaymentPlatform", null)
+                    b.HasOne("UtilityBills.Aggregates.ReadingPlatformAggregate.ReadingPlatform", null)
                         .WithMany("Credentials")
-                        .HasForeignKey("UtilityPaymentPlatformId")
+                        .HasForeignKey("ReadingPlatformId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.UtilityPaymentPlatform", b =>
+            modelBuilder.Entity("UtilityBills.Aggregates.ReadingPlatformAggregate.ReadingPlatform", b =>
                 {
                     b.Navigation("Credentials");
                 });

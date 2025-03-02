@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using UtilityBills.Aggregates;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Services;
-using UtilityBills.Application.Aggregates.UtilityPaymentPlatformAggregate.Services;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Services;
+using UtilityBills.Application.Aggregates.ReadingPlatformAggregate.Services;
 using UtilityBills.Application.Services;
 using UtilityBills.Services;
 
@@ -11,8 +11,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
     {
-        services.AddScoped<IUtilityPaymentPlatformService, UtilityPaymentPlatformService>();
-        services.AddScoped<IWaterMeterReadingsService, WaterMeterReadingsService>();
+        services.AddScoped<IReadingPlatformService, ReadingPlatformService>();
+        services.AddScoped<IMeterReadingsService, MeterReadingsService>();
 
         services.AddScoped<ICredentialsValidator, OrientCredentialsValidator>();
         services.AddScoped<ICredentialsValidator, KvadoCredentialsValidator>();

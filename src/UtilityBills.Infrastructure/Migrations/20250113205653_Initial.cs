@@ -23,7 +23,7 @@ namespace UtilityBills.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UtilityPaymentPlatforms",
+                name: "ReadingPlatforms",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -34,34 +34,34 @@ namespace UtilityBills.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UtilityPaymentPlatforms", x => x.Id);
+                    table.PrimaryKey("PK_ReadingPlatforms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UtilityPaymentPlatformCredentials",
+                name: "ReadingPlatformCredentials",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UtilityPaymentPlatformId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReadingPlatformId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UtilityPaymentPlatformCredentials", x => x.Id);
+                    table.PrimaryKey("PK_ReadingPlatformCredentials", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UtilityPaymentPlatformCredentials_UtilityPaymentPlatforms_U~",
-                        column: x => x.UtilityPaymentPlatformId,
-                        principalTable: "UtilityPaymentPlatforms",
+                        name: "FK_ReadingPlatformCredentials_ReadingPlatforms_U~",
+                        column: x => x.ReadingPlatformId,
+                        principalTable: "ReadingPlatforms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_UtilityPaymentPlatformCredentials_UtilityPaymentPlatformId",
-                table: "UtilityPaymentPlatformCredentials",
-                column: "UtilityPaymentPlatformId");
+                name: "IX_ReadingPlatformCredentials_ReadingPlatformId",
+                table: "ReadingPlatformCredentials",
+                column: "ReadingPlatformId");
         }
 
         /// <inheritdoc />
@@ -71,10 +71,10 @@ namespace UtilityBills.Infrastructure.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "UtilityPaymentPlatformCredentials");
+                name: "ReadingPlatformCredentials");
 
             migrationBuilder.DropTable(
-                name: "UtilityPaymentPlatforms");
+                name: "ReadingPlatforms");
         }
     }
 }

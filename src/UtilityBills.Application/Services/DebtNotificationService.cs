@@ -1,27 +1,27 @@
 using Microsoft.Extensions.Logging;
 using UtilityBills.Abstractions;
 using UtilityBills.Abstractions.Services;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate;
-using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Specifications;
+using UtilityBills.Aggregates.ReadingPlatformAggregate;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Specifications;
 using UtilityBills.Services;
 
 namespace UtilityBills.Application.Services;
 
 public class DebtNotificationService : IDebtNotificationService
 {
-    private readonly Dictionary<UtilityPaymentPlatformType, IDebtProvider> _debtProviders;
-    private readonly IRepository<UtilityPaymentPlatform> _repository;
+    private readonly Dictionary<ReadingPlatformType, IDebtProvider> _debtProviders;
+    private readonly IRepository<ReadingPlatform> _repository;
     private readonly IDebtNotificationProvider _notificationProvider;
     private readonly ILogger<DebtNotificationService>? _logger;
 
     public DebtNotificationService(IOrientProvider orientProvider, IKvadoProvider kvadoProvider,
-        IRepository<UtilityPaymentPlatform> repository, IDebtNotificationProvider notificationProvider,
+        IRepository<ReadingPlatform> repository, IDebtNotificationProvider notificationProvider,
         ILogger<DebtNotificationService>? logger = null)
     {
-        _debtProviders = new Dictionary<UtilityPaymentPlatformType, IDebtProvider>
+        _debtProviders = new Dictionary<ReadingPlatformType, IDebtProvider>
         {
-            [UtilityPaymentPlatformType.Orient] = orientProvider,
-            [UtilityPaymentPlatformType.Kvado] = kvadoProvider
+            [ReadingPlatformType.Orient] = orientProvider,
+            [ReadingPlatformType.Kvado] = kvadoProvider
         };
         _repository = repository;
         _notificationProvider = notificationProvider;
