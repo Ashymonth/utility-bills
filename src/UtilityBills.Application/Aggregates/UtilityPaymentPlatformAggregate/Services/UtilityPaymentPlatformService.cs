@@ -63,12 +63,12 @@ public class UtilityPaymentPlatformService : IUtilityPaymentPlatformService
         return result;
     }
 
-    public async Task<IReadOnlyCollection<UtilityPaymentPlatform>> GetPlatformsForWaterMeterReadingsAsync(
+    public async Task<IReadOnlyCollection<UtilityPaymentPlatform>> GetPlatformsForMeterReadingsAsync(
         string userId, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
         
-        var result = await _repository.ListAsync(new GetPlatformsWithWaterMeterReadings(userId), ct);
+        var result = await _repository.ListAsync(new GetPlatformsWithMeterReadings(userId), ct);
 
         return result;
     }

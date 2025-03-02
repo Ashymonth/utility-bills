@@ -2,19 +2,19 @@ using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Models;
 
-public class WaterMeterReadingsPair
+public class MeterReadingsPair
 {
-    private WaterMeterReadingsPair()
+    private MeterReadingsPair()
     {
     }
 
-    public WaterMeterReadings HotWater { get; private set; } = null!;
+    public MeterReadings HotWater { get; private set; } = null!;
 
-    public WaterMeterReadings? ColdWater { get; private set; }
+    public MeterReadings? ColdWater { get; private set; }
 
-    public static WaterMeterReadingsPair Create(WaterMeterReadings hotWater, WaterMeterReadings? coldWater)
+    public static MeterReadingsPair Create(MeterReadings hotWater, MeterReadings? coldWater)
     {
-        return new WaterMeterReadingsPair
+        return new MeterReadingsPair
         {
             HotWater = hotWater,
             ColdWater = coldWater

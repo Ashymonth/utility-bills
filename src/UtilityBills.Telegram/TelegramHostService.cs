@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 using UtilityBills.Telegram.Extensions.WorkflowExtensions;
 using UtilityBills.Telegram.Workflows.AddCredentialWorkflowFeature;
 using UtilityBills.Telegram.Workflows.Core.Models;
-using UtilityBills.Telegram.Workflows.SendWaterMeterReadingsWorkflowFeature;
+using UtilityBills.Telegram.Workflows.SendMeterReadingsWorkflowFeature;
 using WorkflowCore.Interface;
 
 namespace UtilityBills.Telegram;
@@ -41,7 +41,7 @@ public class TelegramHostService : BackgroundService
             },
             new BotCommand
             {
-                Command = Command.SendWaterMeterReadings,
+                Command = Command.SendMeterReadings,
                 Description = "Send water meter readings to platforms where credentials were added"
             }
         ], cancellationToken: stoppingToken);
@@ -72,10 +72,10 @@ public class TelegramHostService : BackgroundService
                             nameof(AddCredentialWorkflow),
                             new AddCredentialWorkflowData { UserId = userId! }));
                         break;
-                    case Command.SendWaterMeterReadings:
+                    case Command.SendMeterReadings:
                         UserIdToWorkflowId.TryAdd(userId,
-                            await workflowHost.StartWorkflow(nameof(SendWaterMeterReadingsWorkflow),
-                                new SendWaterMeterReadingsWorkflowData { UserId = userId! }));
+                            await workflowHost.StartWorkflow(nameof(SendMeterReadingsWorkflow),
+                                new SendMeterReadingsWorkflowData { UserId = userId! }));
                         break;
                     default:
                         await workflowHost.PublishUserMessageAsync(update.Type, userId!, userMessage);

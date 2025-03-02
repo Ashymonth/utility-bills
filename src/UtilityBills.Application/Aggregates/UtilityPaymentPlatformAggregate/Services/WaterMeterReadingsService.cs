@@ -8,13 +8,13 @@ using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Application.Aggregates.UtilityPaymentPlatformAggregate.Services;
 
-public class WaterMeterReadingsService : IWaterMeterReadingsService
+public class MeterReadingsService : IMeterReadingsService
 {
     private readonly IUtilityPaymentPlatformService _platformService;
     private readonly IOrientProvider _orientProvider;
     private readonly IKvadoProvider _kvadoProvider;
 
-    public WaterMeterReadingsService(IUtilityPaymentPlatformService platformService, IOrientProvider orientProvider,
+    public MeterReadingsService(IUtilityPaymentPlatformService platformService, IOrientProvider orientProvider,
         IKvadoProvider kvadoProvider)
     {
         _platformService = platformService;
@@ -22,23 +22,23 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
         _kvadoProvider = kvadoProvider;
     }
 
-    public async Task<Result<WaterMeterReadingsPair>> GetCurrentReadingsAsync(string userId,
+    public async Task<Result<MeterReadingsPair>> GetCurrentReadingsAsync(string userId,
         CancellationToken ct = default)
     {
-        var result = await GetWaterMeterReadingsAsync(userId, RequestReadingType.Current, ct);
+        var result = await GetMeterReadingsAsync(userId, RequestReadingType.Current, ct);
 
         return result;
     }
 
-    public async Task<Result<WaterMeterReadingsPair>> GetPreviousReadingsAsync(string userId,
+    public async Task<Result<MeterReadingsPair>> GetPreviousReadingsAsync(string userId,
         CancellationToken ct = default)
     {
-        var result = await GetWaterMeterReadingsAsync(userId, RequestReadingType.Previous, ct);
+        var result = await GetMeterReadingsAsync(userId, RequestReadingType.Previous, ct);
 
         return result;
     }
 
-    public async Task<Result> SendReadingsAsync(string userId, WaterMeterReadings hotWater, WaterMeterReadings coldWater,
+    public async Task<Result> SendReadingsAsync(string userId, MeterReadings hotWater, MeterReadings coldWater,
         CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
@@ -52,10 +52,10 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
         return Result.Ok();
     }
 
-    private async Task<Result<WaterMeterReadingsPair>> GetWaterMeterReadingsAsync(string userId,
+    private async Task<Result<MeterReadingsPair>> GetMeterReadingsAsync(string userId,
         RequestReadingType requestReadingType, CancellationToken ct = default)
     {
-        var result = new ConcurrentBag<WaterMeterReadingsPair>();
+        var result = new ConcurrentBag<MeterReadingsPair>();
         await ExecutePlatformActionAsync(userId, async (platform, credentialForPlatform, token) =>
         {
             var readings = requestReadingType switch
@@ -76,14 +76,14 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
             return Result.Fail("Unable to get hot water");
         }
 
-        return Result.Ok(WaterMeterReadingsPair.Create(maxHotWater.HotWater, maxColdWater?.ColdWater));
+        return Result.Ok(MeterReadingsPair.Create(maxHotWater.HotWater, maxColdWater?.ColdWater));
     }
 
     private async Task ExecutePlatformActionAsync(string userId,
         Func<UtilityPaymentPlatform, UtilityPaymentPlatformCredential, CancellationToken, Task> func,
         CancellationToken ct = default)
     {
-        var platforms = await _platformService.GetPlatformsForWaterMeterReadingsAsync(userId, ct);
+        var platforms = await _platformService.GetPlatformsForMeterReadingsAsync(userId, ct);
         if (platforms.Count == 0)
         {
             throw new InvalidOperationException("Platforms are not set");
@@ -108,8 +108,8 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
 
     private async Task SendReadingsAsync(UtilityPaymentPlatform platform,
         UtilityPaymentPlatformCredential credential,
-        WaterMeterReadings hotWater,
-        WaterMeterReadings coldWater,
+        MeterReadings hotWater,
+        MeterReadings coldWater,
         CancellationToken ct)
     {
         if (!platform.CanSendMeterReadings(DateOnly.FromDateTime(DateTime.Now)))
@@ -119,9 +119,9 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
 
         _ = platform.PlatformType switch
         {
-            UtilityPaymentPlatformType.Kvado => (await _kvadoProvider.SendWaterMeterReadingsAsync(
+            UtilityPaymentPlatformType.Kvado => (await _kvadoProvider.SendMeterReadingsAsync(
                 credential.Email, credential.Password, hotWater, coldWater, ct)),
-            UtilityPaymentPlatformType.Orient => (await _orientProvider.SendWaterMeterReadingsAsync(
+            UtilityPaymentPlatformType.Orient => (await _orientProvider.SendMeterReadingsAsync(
                 credential.Email, credential.Password, hotWater, ct)),
             UtilityPaymentPlatformType.RusEnergy => throw new NotSupportedException(),
             _ => throw new NotSupportedException()
@@ -129,14 +129,14 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
     }
 
 
-    private async Task<WaterMeterReadingsPair> GetCurrentReadingsAsync(
+    private async Task<MeterReadingsPair> GetCurrentReadingsAsync(
         UtilityPaymentPlatform platform,
         UtilityPaymentPlatformCredential credential,
         CancellationToken ct)
     {
         return platform.PlatformType switch
         {
-            UtilityPaymentPlatformType.Kvado => (await _kvadoProvider.GetCurrentWaterMeterReadingsAsync(
+            UtilityPaymentPlatformType.Kvado => (await _kvadoProvider.GetCurrentMeterReadingsAsync(
                 credential.Email, credential.Password, ct)).Value,
             UtilityPaymentPlatformType.Orient => (await _orientProvider.GetPreviousWaterMeterReadingAsync(
                 credential.Email, credential.Password, ct)).Value,
@@ -145,14 +145,14 @@ public class WaterMeterReadingsService : IWaterMeterReadingsService
         };
     }
 
-    private async Task<WaterMeterReadingsPair> GetPreviousReadingsAsync(
+    private async Task<MeterReadingsPair> GetPreviousReadingsAsync(
         UtilityPaymentPlatform platform,
         UtilityPaymentPlatformCredential credential,
         CancellationToken ct)
     {
         return platform.PlatformType switch
         {
-            UtilityPaymentPlatformType.Kvado => (await _kvadoProvider.GetPreviousWaterMeterReadingsAsync(
+            UtilityPaymentPlatformType.Kvado => (await _kvadoProvider.GetPreviousMeterReadingsAsync(
                 credential.Email, credential.Password, ct)).Value,
             UtilityPaymentPlatformType.Orient => (await _orientProvider.GetPreviousWaterMeterReadingAsync(
                 credential.Email, credential.Password, ct)).Value,

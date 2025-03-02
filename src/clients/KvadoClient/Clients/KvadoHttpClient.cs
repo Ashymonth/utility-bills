@@ -33,10 +33,10 @@ public interface IKvadoHttpClient
     /// <returns></returns>
     Task<decimal?> GetDebtAsync(string email, string password, CancellationToken ct = default);
 
-    Task<WaterMeterReadings> GetPreviousWaterMeterReadingsAsync(string email, string password,
+    Task<MeterReadings> GetPreviousMeterReadingsAsync(string email, string password,
         CancellationToken ct = default);
 
-    Task<WaterMeterReadings> GetCurrentWaterMeterReadingsAsync(string email, string password,
+    Task<MeterReadings> GetCurrentMeterReadingsAsync(string email, string password,
         CancellationToken ct = default);
 }
 
@@ -85,7 +85,7 @@ public class KvadoHttpClient : IKvadoHttpClient
         return new DebtParser().ParseDebt(content);
     }
 
-    public async Task<WaterMeterReadings> GetCurrentWaterMeterReadingsAsync(string email, string password,
+    public async Task<MeterReadings> GetCurrentMeterReadingsAsync(string email, string password,
         CancellationToken ct = default)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, "/counters");
@@ -95,10 +95,10 @@ public class KvadoHttpClient : IKvadoHttpClient
         
         var page = await response.Content.ReadAsStringAsync(ct);
 
-        return new PreviousWaterMeterReadingsParser().ParseCurrentWaterMeterReadings(page);
+        return new PreviousMeterReadingsParser().ParseCurrentMeterReadings(page);
     }
     
-    public async Task<WaterMeterReadings> GetPreviousWaterMeterReadingsAsync(string email, string password,
+    public async Task<MeterReadings> GetPreviousMeterReadingsAsync(string email, string password,
         CancellationToken ct = default)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, "/counters");
@@ -108,7 +108,7 @@ public class KvadoHttpClient : IKvadoHttpClient
         
         var page = await response.Content.ReadAsStringAsync(ct);
 
-        return new PreviousWaterMeterReadingsParser().ParsePreviousWaterMeterReadings(page);
+        return new PreviousMeterReadingsParser().ParsePreviousMeterReadings(page);
     }
 
     private static FormUrlEncodedContent CreateSendCountersRequestBody(string token,

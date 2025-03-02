@@ -2,9 +2,9 @@ using Ardalis.Specification;
 
 namespace UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Specifications;
 
-public sealed class GetPlatformsWithWaterMeterReadings : Specification<UtilityPaymentPlatform>
+public sealed class GetPlatformsWithMeterReadings : Specification<UtilityPaymentPlatform>
 {
-    public GetPlatformsWithWaterMeterReadings(string userId)
+    public GetPlatformsWithMeterReadings(string userId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
         Query.Where(platform => platform.PlatformType == UtilityPaymentPlatformType.Kvado ||

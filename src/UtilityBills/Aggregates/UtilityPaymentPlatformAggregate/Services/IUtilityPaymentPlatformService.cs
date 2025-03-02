@@ -11,6 +11,6 @@ public interface IUtilityPaymentPlatformService
 
     Task<Result<UtilityPaymentPlatform>> GetPlatformAsync(Guid platformId, CancellationToken ct = default);
 
-    Task<IReadOnlyCollection<UtilityPaymentPlatform>> GetPlatformsForWaterMeterReadingsAsync(string userId,
+    Task<IReadOnlyCollection<UtilityPaymentPlatform>> GetPlatformsForMeterReadingsAsync(string userId,
         CancellationToken ct = default);
 }

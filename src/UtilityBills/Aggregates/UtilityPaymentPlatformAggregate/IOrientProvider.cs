@@ -9,12 +9,12 @@ public interface IOrientProvider : IDebtProvider
 {
     Task<Result> AuthenticateAsync(Email email, Password password, CancellationToken ct = default);
 
-    Task<Result> SendWaterMeterReadingsAsync(Email email, Password password, WaterMeterReadings hotWater,
+    Task<Result> SendMeterReadingsAsync(Email email, Password password, MeterReadings hotWater,
         CancellationToken ct = default);
 
-    Task<Result<DateOnly>> GetLastDayWhenWaterMeterReadingsWereSent(Email email, Password password,
+    Task<Result<DateOnly>> GetLastDayWhenMeterReadingsWereSent(Email email, Password password,
         CancellationToken ct = default);
     
-    Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
+    Task<Result<MeterReadingsPair>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
         CancellationToken ct = default);
 }

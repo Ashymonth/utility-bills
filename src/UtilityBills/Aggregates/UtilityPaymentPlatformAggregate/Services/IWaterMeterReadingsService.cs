@@ -4,13 +4,13 @@ using UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.ValueObjects;
 
 namespace UtilityBills.Aggregates.UtilityPaymentPlatformAggregate.Services;
 
-public interface IWaterMeterReadingsService
+public interface IMeterReadingsService
 {
-    Task<Result<WaterMeterReadingsPair>> GetCurrentReadingsAsync(string userId,
+    Task<Result<MeterReadingsPair>> GetCurrentReadingsAsync(string userId,
         CancellationToken ct = default);
     
-    Task<Result<WaterMeterReadingsPair>> GetPreviousReadingsAsync(string userId, CancellationToken ct = default);
+    Task<Result<MeterReadingsPair>> GetPreviousReadingsAsync(string userId, CancellationToken ct = default);
     
-    Task<Result> SendReadingsAsync(string userId, WaterMeterReadings hotWater, WaterMeterReadings coldWater,
+    Task<Result> SendReadingsAsync(string userId, MeterReadings hotWater, MeterReadings coldWater,
         CancellationToken ct = default);
 }

@@ -40,7 +40,7 @@ internal class OrientProvider : IOrientProvider
         }
     }
 
-    public async Task<Result> SendWaterMeterReadingsAsync(Email email, Password password, WaterMeterReadings hotWater,
+    public async Task<Result> SendMeterReadingsAsync(Email email, Password password, MeterReadings hotWater,
         CancellationToken ct = default)
     {
         try
@@ -59,7 +59,7 @@ internal class OrientProvider : IOrientProvider
         }
     }
 
-    public async Task<Result<DateOnly>> GetLastDayWhenWaterMeterReadingsWereSent(Email email, Password password,
+    public async Task<Result<DateOnly>> GetLastDayWhenMeterReadingsWereSent(Email email, Password password,
         CancellationToken ct = default)
     {
         try
@@ -77,7 +77,7 @@ internal class OrientProvider : IOrientProvider
         }
     }
 
-    public async Task<Result<WaterMeterReadingsPair>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
+    public async Task<Result<MeterReadingsPair>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
         CancellationToken ct = default)
     {
         try
@@ -85,7 +85,7 @@ internal class OrientProvider : IOrientProvider
             var result = await _orientClient.GetPreviousWaterMeterReadingAsync(email.Value,
                 password.GetUnprotected(_passwordProtector), ct);
 
-            return Result.Ok(WaterMeterReadingsPair.Create(WaterMeterReadings.Create(result).Value, null));
+            return Result.Ok(MeterReadingsPair.Create(MeterReadings.Create(result).Value, null));
         }
         catch (Exception e)
         {

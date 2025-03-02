@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
     {
         services.AddScoped<IUtilityPaymentPlatformService, UtilityPaymentPlatformService>();
-        services.AddScoped<IWaterMeterReadingsService, WaterMeterReadingsService>();
+        services.AddScoped<IMeterReadingsService, MeterReadingsService>();
 
         services.AddScoped<ICredentialsValidator, OrientCredentialsValidator>();
         services.AddScoped<ICredentialsValidator, KvadoCredentialsValidator>();

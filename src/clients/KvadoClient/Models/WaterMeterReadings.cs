@@ -1,6 +1,6 @@
 namespace KvadoClient.Models;
 
-public class WaterMeterReadings
+public class MeterReadings
 {
     public int ColdWater { get; init; }
 
