@@ -60,11 +60,10 @@ using (var scope = app.Services.CreateScope())
     context.Database.Migrate();
     if (!await context.ReadingPlatforms.AnyAsync())
     {
-        context.ReadingPlatforms.AddRange([
-            ReadingPlatform.Create("Ориетн", ReadingPlatformType.Orient, "Ориент бридж"),
-            ReadingPlatform.Create("Квадо", ReadingPlatformType.Kvado, "квадо"),
-            ReadingPlatform.Create("Рус энерго", ReadingPlatformType.RusEnergy, "Рус энерго сбыт"),
-        ]);
+        context.ReadingPlatforms.AddRange(
+            ReadingPlatform.Create("Ориетн", ReadingPlatformType.Orient),
+            ReadingPlatform.Create("Квадо", ReadingPlatformType.Kvado),
+            ReadingPlatform.Create("Рус энерго", ReadingPlatformType.RusEnergy));
         context.SaveChanges();
     }
 
