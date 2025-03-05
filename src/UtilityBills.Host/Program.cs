@@ -55,8 +55,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<UtilityBillsDbContext>();
-    context.Database.Migrate();
- 
+    await context.Database.MigrateAsync();
+
     var manager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
     var job = scope.ServiceProvider.GetRequiredService<IDebtNotificationManager>();
     Expression<Func<Task>> jobFun = () => job.StartJob(CancellationToken.None);
