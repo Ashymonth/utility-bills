@@ -50,8 +50,6 @@ builder.Services.AddHangfire(configuration =>
 builder.AddServiceDefaults();
 builder.Services.AddLocalization();
 
-builder.Services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

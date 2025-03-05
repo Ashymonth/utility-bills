@@ -1,7 +1,6 @@
 using FluentResults;
 using UtilityBills.Abstractions;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
-using UtilityBills.Aggregates.ReadingPlatformAggregate.Events;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 using UtilityBills.Exceptions;
 
