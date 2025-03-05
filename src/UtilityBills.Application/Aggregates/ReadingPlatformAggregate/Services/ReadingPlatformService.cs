@@ -38,7 +38,7 @@ public class ReadingPlatformService : IReadingPlatformService
         var credentialValidator = _credentialValidators.GetValueOrDefault(platform.PlatformType) ??
                                   throw new InvalidOperationException();
 
-        var credential = await platform.AddCredentialAsync(email, password, userId, credentialValidator);
+        var credential = await platform.AddCredentialAsync(userId, email, password, credentialValidator);
         if (credential.IsFailed)
         {
             return credential;
@@ -67,7 +67,7 @@ public class ReadingPlatformService : IReadingPlatformService
         string userId, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
-        
+
         var result = await _repository.ListAsync(new GetPlatformsWithMeterReadings(userId), ct);
 
         return result;
