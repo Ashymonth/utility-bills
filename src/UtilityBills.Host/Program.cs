@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
+using System.Reflection;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.PostgreSql;
+using InvestManager.Host.Telegram.Services;
 using KvadoClient.Clients;
 using KvadoClient.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,7 @@ using UtilityBills.Aggregates.ReadingPlatformAggregate;
 using UtilityBills.Application.Extensions;
 using UtilityBills.Aspire.AppHost.ServiceDefaults;
 using UtilityBills.Host;
+using UtilityBills.Host.BackgroundServices;
 using UtilityBills.Host.Extensions;
 using UtilityBills.Host.Integrations;
 using UtilityBills.Host.Security;
@@ -46,6 +49,9 @@ builder.Services.AddHangfire(configuration =>
     configuration.UsePostgreSqlStorage(options =>
         options.UseNpgsqlConnection(builder.Configuration.GetConnectionString(nameof(UtilityBillsDbContext))));
 });
+
+builder.Services.AddTelegramCommands(Assembly.GetExecutingAssembly());
+builder.Services.AddHostedService<TelegramHostedService>();
 
 builder.AddServiceDefaults();
 builder.Services.AddLocalization();

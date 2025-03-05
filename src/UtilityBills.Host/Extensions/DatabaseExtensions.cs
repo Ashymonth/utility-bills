@@ -19,11 +19,11 @@ internal static class DatabaseExtensions
                     return;
                 }
 
-                context.Set<ReadingPlatform>().AddRange(
+                await context.Set<ReadingPlatform>().AddRangeAsync(
                     ReadingPlatform.Create("Ориетн", ReadingPlatformType.Orient),
                     ReadingPlatform.Create("Квадо", ReadingPlatformType.Kvado),
                     ReadingPlatform.Create("Рус энерго", ReadingPlatformType.RusEnergy));
-                
+
                 await context.SaveChangesAsync(token);
             });
 

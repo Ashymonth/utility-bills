@@ -8,8 +8,8 @@ public interface IReadingPlatformService
 {
     Task<Result<ReadingPlatformCredential>> AddCredentialToPlatformAsync(Guid platformId, Email email,
         Password password, string userId, CancellationToken ct = default);
-
-    Task<Result<ReadingPlatform>> GetPlatformAsync(Guid platformId, CancellationToken ct = default);
+ 
+    Task<List<ReadingPlatform>> GetPlatformsAsync(CancellationToken ct = default);
 
     Task<IReadOnlyCollection<ReadingPlatform>> GetPlatformsForMeterReadingsAsync(string userId,
         CancellationToken ct = default);

@@ -51,6 +51,11 @@ public class ReadingPlatformService : IReadingPlatformService
         return credential;
     }
 
+    public async Task<List<ReadingPlatform>> GetPlatformsAsync(CancellationToken ct = default)
+    {
+        return await _repository.ListAsync(ct);
+    }
+
     public async Task<Result<ReadingPlatform>> GetPlatformAsync(Guid platformId, CancellationToken ct = default)
     {
         var result = await _repository.FirstOrDefaultAsync(new GetPlatformByIdSpecification(platformId), ct);
