@@ -29,12 +29,12 @@ namespace UtilityBills.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ReadingPlatformId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid>("ReadingPlatformId")
-                        .HasColumnType("uuid");
 
                     b.ComplexProperty<Dictionary<string, object>>("Email", "UtilityBills.Aggregates.ReadingPlatformAggregate.Entities.ReadingPlatformCredential.Email#Email", b1 =>
                         {
@@ -69,11 +69,6 @@ namespace UtilityBills.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Description")
                         .IsRequired()
