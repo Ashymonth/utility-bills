@@ -12,6 +12,20 @@ namespace UtilityBills.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ReadingPlatforms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    PlatformType = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReadingPlatforms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -20,21 +34,6 @@ namespace UtilityBills.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReadingPlatforms",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Alias = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    PlatformType = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReadingPlatforms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,7 +50,7 @@ namespace UtilityBills.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_ReadingPlatformCredentials", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReadingPlatformCredentials_ReadingPlatforms_U~",
+                        name: "FK_ReadingPlatformCredentials_ReadingPlatforms_ReadingPlatform~",
                         column: x => x.ReadingPlatformId,
                         principalTable: "ReadingPlatforms",
                         principalColumn: "Id",
@@ -68,10 +67,10 @@ namespace UtilityBills.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "ReadingPlatformCredentials");
 
             migrationBuilder.DropTable(
-                name: "ReadingPlatformCredentials");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "ReadingPlatforms");

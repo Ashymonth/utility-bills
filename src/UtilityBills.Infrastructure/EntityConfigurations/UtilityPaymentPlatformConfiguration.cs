@@ -9,7 +9,6 @@ public class ReadingPlatformConfiguration : IEntityTypeConfiguration<ReadingPlat
     public void Configure(EntityTypeBuilder<ReadingPlatform> builder)
     {
         builder.Property(platform => platform.Name).HasMaxLength(64);
-        builder.Property(platform => platform.Alias).HasMaxLength(64);
         builder.Property(platform => platform.Description).HasMaxLength(64);
         builder.Property(platform => platform.Description).HasMaxLength(64);
 

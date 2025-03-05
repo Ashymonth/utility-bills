@@ -50,27 +50,16 @@ builder.Services.AddHangfire(configuration =>
 builder.AddServiceDefaults();
 builder.Services.AddLocalization();
 
-builder.Services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<UtilityBillsDbContext>();
     context.Database.Migrate();
-    if (!await context.ReadingPlatforms.AnyAsync())
-    {
-        context.ReadingPlatforms.AddRange([
-            ReadingPlatform.Create("Ориетн", ReadingPlatformType.Orient, "Ориент бридж"),
-            ReadingPlatform.Create("Квадо", ReadingPlatformType.Kvado, "квадо"),
-            ReadingPlatform.Create("Рус энерго", ReadingPlatformType.RusEnergy, "Рус энерго сбыт"),
-        ]);
-        context.SaveChanges();
-    }
-
+ 
     var manager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
     var job = scope.ServiceProvider.GetRequiredService<IDebtNotificationManager>();
-    Expression<Func<Task>> jobFun = () => job.StartJob(default);
+    Expression<Func<Task>> jobFun = () => job.StartJob(CancellationToken.None);
     manager.AddOrUpdate("Debt", jobFun, Cron.Daily(12));
 }
 

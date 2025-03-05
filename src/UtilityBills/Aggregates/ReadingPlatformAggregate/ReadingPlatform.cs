@@ -1,7 +1,6 @@
 using FluentResults;
 using UtilityBills.Abstractions;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
-using UtilityBills.Aggregates.ReadingPlatformAggregate.Events;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 using UtilityBills.Exceptions;
 
@@ -17,7 +16,7 @@ public class ReadingPlatform : Entity, IAggregateRoot
         [ReadingPlatformType.Kvado] = [..Enumerable.Range(15, 25)],
         [ReadingPlatformType.Orient] = [..Enumerable.Range(20, 25)],
     };
-    
+
     private readonly List<ReadingPlatformCredential> _platformCredentials = [];
 
     /// <summary>
@@ -25,12 +24,7 @@ public class ReadingPlatform : Entity, IAggregateRoot
     /// </summary>
     public string Name { get; private set; } = null!;
 
-    /// <summary>
-    /// An alias for the platform name.
-    /// </summary>
-    public string Alias { get; private set; } = null!;
-
-    public ReadingPlatformType PlatformType { get; private set; }
+    public ReadingPlatformType PlatformType { get; private init; }
 
     /// <summary>
     /// Short information about the platform.
@@ -42,17 +36,15 @@ public class ReadingPlatform : Entity, IAggregateRoot
     /// </summary>
     public IReadOnlyCollection<ReadingPlatformCredential> Credentials => _platformCredentials;
 
-    public static ReadingPlatform Create(string name, ReadingPlatformType type, string description)
+    public static ReadingPlatform Create(string name, ReadingPlatformType type)
     {
         return new ReadingPlatform
         {
             Name = name,
-            PlatformType = type,
-            Alias = type.ToString().ToLower(),
-            Description = description,
+            PlatformType = type
         };
     }
-    
+
     public ReadingPlatformCredential? GetUserCredential(string userId)
     {
         return Credentials.FirstOrDefault(credential => credential.UserId == userId);
@@ -70,8 +62,9 @@ public class ReadingPlatform : Entity, IAggregateRoot
     /// <param name="password"></param>
     /// <param name="userId"></param>
     /// <param name="validator"></param>
-    public async Task<Result<ReadingPlatformCredential>> AddCredentialAsync(Email email, Password password,
+    public async Task<Result<ReadingPlatformCredential>> AddCredentialAsync(
         string userId,
+        Email email, Password password,
         ICredentialsValidator validator)
     {
         if (validator.PlatformType != PlatformType)
@@ -91,25 +84,9 @@ public class ReadingPlatform : Entity, IAggregateRoot
         {
             return credentialResult;
         }
-        
+
         _platformCredentials.Add(credentialResult.Value);
 
-        AddDomainEvent(new ReadingPlatformCredentialAddedEvent(credentialResult.Value));
-
         return credentialResult;
-    }
-
-    public void DeleteCredentials(Email email, string userId)
-    {
-        var credentialToDelete =
-            Credentials.FirstOrDefault(credential => credential.Email == email && credential.UserId == userId);
-
-        if (credentialToDelete is null)
-        {
-            throw new ItemNotFoundException(
-                $"Credential with email: {email.Value} for platform: {PlatformType} not found");
-        }
-
-        _platformCredentials.Remove(credentialToDelete);
     }
 }

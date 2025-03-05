@@ -1,6 +1,0 @@
-using UtilityBills.Abstractions;
-using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
-
-namespace UtilityBills.Aggregates.ReadingPlatformAggregate.Events;
-
-public record ReadingPlatformCredentialAddedEvent(ReadingPlatformCredential Credential) : IDomainEvent;
