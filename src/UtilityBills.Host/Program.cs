@@ -56,18 +56,10 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<UtilityBillsDbContext>();
     context.Database.Migrate();
-    if (!await context.ReadingPlatforms.AnyAsync())
-    {
-        context.ReadingPlatforms.AddRange(
-            ReadingPlatform.Create("Ориетн", ReadingPlatformType.Orient),
-            ReadingPlatform.Create("Квадо", ReadingPlatformType.Kvado),
-            ReadingPlatform.Create("Рус энерго", ReadingPlatformType.RusEnergy));
-        context.SaveChanges();
-    }
-
+ 
     var manager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
     var job = scope.ServiceProvider.GetRequiredService<IDebtNotificationManager>();
-    Expression<Func<Task>> jobFun = () => job.StartJob(default);
+    Expression<Func<Task>> jobFun = () => job.StartJob(CancellationToken.None);
     manager.AddOrUpdate("Debt", jobFun, Cron.Daily(12));
 }
 
