@@ -15,6 +15,7 @@ using UtilityBills.Application.Extensions;
 using UtilityBills.Aspire.AppHost.ServiceDefaults;
 using UtilityBills.Host;
 using UtilityBills.Host.BackgroundServices;
+using UtilityBills.Host.Commands;
 using UtilityBills.Host.Extensions;
 using UtilityBills.Host.Integrations;
 using UtilityBills.Host.Security;
@@ -51,6 +52,7 @@ builder.Services.AddHangfire(configuration =>
 });
 
 builder.Services.AddTelegramCommands(Assembly.GetExecutingAssembly());
+builder.Services.AddInterceptor<ExitTelegramCommandInterceptor>();
 builder.Services.AddHostedService<TelegramHostedService>();
 
 builder.AddServiceDefaults();
