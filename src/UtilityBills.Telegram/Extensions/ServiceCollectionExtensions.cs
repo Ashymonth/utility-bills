@@ -44,7 +44,7 @@ public static class ServiceCollectionExtensions
         var workflowHost = app.GetRequiredService<IWorkflowHost>();
 
        // workflowHost.RegisterWorkflow<AddCredentialWorkflow, AddCredentialWorkflowData>();
-        workflowHost.RegisterWorkflow<SendMeterReadingsWorkflow, SendMeterReadingsWorkflowData>();
+        //workflowHost.RegisterWorkflow<SendMeterReadingsWorkflow, SendMeterReadingsWorkflowData>();
         workflowHost.Start();
     }
 }

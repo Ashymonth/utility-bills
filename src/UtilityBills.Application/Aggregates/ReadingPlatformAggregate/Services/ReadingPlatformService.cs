@@ -22,6 +22,12 @@ public class ReadingPlatformService : IReadingPlatformService
         _credentialValidators = credentialValidators.ToDictionary(validator => validator.PlatformType);
     }
 
+    public async Task<List<ReadingPlatform>> GetPlatformsWithUserCredentialsAsync(string userId)
+    {
+        return await _repository.ListAsync(new GetAllPlatformsWithCredentials(userId));
+    }
+    
+
     public async Task<Result<ReadingPlatformCredential>> AddCredentialToPlatformAsync(Guid platformId,
         Email email, Password password, string userId,
         CancellationToken ct = default)
