@@ -1,3 +1,4 @@
+using FluentResults;
 using InvestManager.Host.Telegram.Abstractions;
 using InvestManager.Host.Telegram.Attributes;
 using InvestManager.Host.Telegram.Extensions;
@@ -6,6 +7,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using UtilityBills.Abstractions;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
+using UtilityBills.Aggregates.ReadingPlatformAggregate.Models;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.Services;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.ValueObjects;
 using UtilityBills.Telegram;
@@ -55,25 +57,45 @@ public class SendMeterReadingsCommand : ITelegramCommand
                                       $"Холодная вода: {previousMeterReadings.Value.ColdWater!.Value}",
             cancellationToken: ct);
 
-        var userHotWater = await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
-            "Введите показания <b>горячей</b> воды\n" +
-            $"Предыдущие показания: {previousMeterReadings.Value.HotWater.Value}", bot, ct);
+        var userHotWater = await RequestHotWaterAsync(bot, userId, previousMeterReadings, ct);
 
-        var userColdWater = await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
-            "Введите показания <b>холодной</b> воды\n" +
-            $"Предыдущие показания: {previousMeterReadings.Value.ColdWater.Value}", bot, ct);
-        
+        var userColdWater = await RequestColdWaterAsync(bot, userId, previousMeterReadings, ct);
+
         await bot.SendMessage(userId, "Передача показаний. Ожидайте...", cancellationToken: ct);
 
         var result = await _readingsService.SendReadingsAsync(userId.ToString(), userHotWater, userColdWater, ct);
 
-        if (result.IsSuccess)
+        if (result.IsFailed)
         {
-            await bot.SendMessage(userId, "Показания успешно отправлены", cancellationToken: ct);
+            await bot.SendMessage(userId, "Не удалось отправить показания. Попробуйте позже", cancellationToken: ct);
             return;
         }
 
-        await bot.SendMessage(userId, "Не удалось отправить показания. Попробуйте позже", cancellationToken: ct);
+        var currentReadings = await _readingsService.GetCurrentReadingsAsync(userId.ToString(), ct);
+
+        if (currentReadings.Value.HotWater != userHotWater && currentReadings.Value.ColdWater != userColdWater)
+        {
+            await bot.SendMessage(userId, "Не удалось отправить показания. Попробуйте позже", cancellationToken: ct);
+            return;
+        }
+
+        await bot.SendMessage(userId, "Показания успешно отправлены", cancellationToken: ct);
+    }
+
+    private static async Task<MeterReadings> RequestHotWaterAsync(ITelegramBotClient bot, long userId,
+        Result<MeterReadingsPair> previousMeterReadings, CancellationToken ct)
+    {
+        return await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
+            "Введите показания <b>горячей</b> воды\n" +
+            $"Предыдущие показания: {previousMeterReadings.Value.HotWater.Value}", bot, ct);
+    }
+    
+    private static async Task<MeterReadings> RequestColdWaterAsync(ITelegramBotClient bot, long userId,
+        Result<MeterReadingsPair> previousMeterReadings, CancellationToken ct)
+    {
+        return await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
+            "Введите показания <b>горячей</b> воды\n" +
+            $"Предыдущие показания: {previousMeterReadings.Value.HotWater.Value}", bot, ct);
     }
 
     private static async Task<MeterReadings> RequestWaterMeterReadingsAsync(long userId,
