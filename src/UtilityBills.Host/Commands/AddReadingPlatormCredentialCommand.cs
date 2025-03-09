@@ -1,5 +1,6 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBotCommandFramework.Abstractions;
 using TelegramBotCommandFramework.Attributes;
@@ -36,8 +37,8 @@ public class AddReadingPlatformCredentialCommand : ITelegramCommand
         var selectedPlatform = await RequestSelectPlatform(userId, platforms, bot, ct);
 
         var userEmail = await RequestSelectEmail(userId, bot, ct);
- 
-        var userPassword =  await RequestSelectPassword(userId, bot, ct);
+
+        var userPassword = await RequestSelectPassword(userId, bot, ct);
 
         await bot.SendMessage(userId, "Попытка авторизоваться на платформе с указанным логином и паролем. Ожидайте...",
             cancellationToken: ct);
@@ -48,13 +49,14 @@ public class AddReadingPlatformCredentialCommand : ITelegramCommand
         if (result.IsSuccess)
         {
             await bot.SendMessage(userId,
-                $"Вы успешно авторизовались на платформе: {selectedPlatform.Name}\n" +
+                $"Вы успешно авторизовались на платформе: <b>{selectedPlatform.Name}</b>\n" +
                 $"Почта: {userEmail.Value}.",
+                ParseMode.Html,
                 cancellationToken: ct);
             return;
         }
 
-        await bot.SendMessage(userId, "Не удалось авторизоваться. Проверьте логи и пароль и повторите попытку",
+        await bot.SendMessage(userId, "Не удалось авторизоваться. Проверьте логин и пароль и повторите попытку",
             cancellationToken: ct);
     }
 
@@ -88,7 +90,7 @@ public class AddReadingPlatformCredentialCommand : ITelegramCommand
 
         while (userEmail is null)
         {
-            await bot.SendMessage(userId, "Введите email ", replyMarkup: new ReplyKeyboardRemove(),
+            await bot.SendMessage(userId, "Введите email", replyMarkup: new ReplyKeyboardRemove(),
                 cancellationToken: ct);
 
             var emailResponse = await bot.WaitForUserMessageAsync(userId);
@@ -104,7 +106,7 @@ public class AddReadingPlatformCredentialCommand : ITelegramCommand
         Password userPassword = null!;
         while (userPassword is null)
         {
-            await bot.SendMessage(userId, "Введите пароль ", replyMarkup: new ReplyKeyboardRemove(),
+            await bot.SendMessage(userId, "Введите пароль", replyMarkup: new ReplyKeyboardRemove(),
                 cancellationToken: ct);
 
             var passwordResponse = await bot.WaitForUserMessageAsync(userId);
