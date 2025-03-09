@@ -1,17 +1,19 @@
 using System.Linq.Expressions;
+using System.Reflection;
 using Hangfire;
-using Hangfire.MemoryStorage;
 using Hangfire.PostgreSql;
-using KvadoClient.Clients;
 using KvadoClient.Extensions;
 using Microsoft.EntityFrameworkCore;
 using OrientClient.Extensions;
+using TelegramBotCommandFramework.Services;
 using UtilityBills.Abstractions.Services;
 using UtilityBills.Aggregates;
 using UtilityBills.Aggregates.ReadingPlatformAggregate;
 using UtilityBills.Application.Extensions;
 using UtilityBills.Aspire.AppHost.ServiceDefaults;
 using UtilityBills.Host;
+using UtilityBills.Host.BackgroundServices;
+using UtilityBills.Host.Commands;
 using UtilityBills.Host.Extensions;
 using UtilityBills.Host.Integrations;
 using UtilityBills.Host.Security;
@@ -47,6 +49,10 @@ builder.Services.AddHangfire(configuration =>
         options.UseNpgsqlConnection(builder.Configuration.GetConnectionString(nameof(UtilityBillsDbContext))));
 });
 
+builder.Services.AddTelegramCommands(Assembly.GetExecutingAssembly());
+builder.Services.AddInterceptor<ExitTelegramCommandInterceptor>();
+builder.Services.AddHostedService<TelegramHostedService>();
+
 builder.AddServiceDefaults();
 builder.Services.AddLocalization();
 
@@ -55,8 +61,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<UtilityBillsDbContext>();
-    context.Database.Migrate();
- 
+    await context.Database.MigrateAsync();
+
     var manager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
     var job = scope.ServiceProvider.GetRequiredService<IDebtNotificationManager>();
     Expression<Func<Task>> jobFun = () => job.StartJob(CancellationToken.None);

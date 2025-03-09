@@ -8,4 +8,9 @@ public sealed class GetAllPlatformsWithCredentials : Specification<ReadingPlatfo
     {
         Query.Include(platform => platform.Credentials);
     }
+    
+    public GetAllPlatformsWithCredentials(string userId)
+    {
+        Query.Include(platform => platform.Credentials.Where(credential => credential.UserId == userId));
+    }
 }

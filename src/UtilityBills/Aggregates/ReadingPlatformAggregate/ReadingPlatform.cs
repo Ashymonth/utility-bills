@@ -29,7 +29,7 @@ public class ReadingPlatform : Entity, IAggregateRoot
     /// <summary>
     /// Short information about the platform.
     /// </summary>
-    public string Description { get; private set; } = null!;
+    public string Description { get; private set; } = "";
 
     /// <summary>
     /// Linked credentials to this platform.

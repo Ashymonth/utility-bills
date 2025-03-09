@@ -35,7 +35,6 @@ public static class ServiceCollectionExtensions
         services.AddTransient<SendInlineDataMessageToUser>();
 
         services.AddSingleton<ITelegramBotClient>(_ => new TelegramBotClient(botToken));
-        services.AddHostedService<TelegramHostService>();
 
         return services;
     }
@@ -44,8 +43,8 @@ public static class ServiceCollectionExtensions
     {
         var workflowHost = app.GetRequiredService<IWorkflowHost>();
 
-        workflowHost.RegisterWorkflow<AddCredentialWorkflow, AddCredentialWorkflowData>();
-        workflowHost.RegisterWorkflow<SendMeterReadingsWorkflow, SendMeterReadingsWorkflowData>();
+       // workflowHost.RegisterWorkflow<AddCredentialWorkflow, AddCredentialWorkflowData>();
+        //workflowHost.RegisterWorkflow<SendMeterReadingsWorkflow, SendMeterReadingsWorkflowData>();
         workflowHost.Start();
     }
 }
