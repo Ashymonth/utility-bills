@@ -8,6 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/UtilityBills.Host/UtilityBills.Host.csproj", "src/UtilityBills.Host/"]
+COPY ["src/clients/KvadoClient/KvadoClient.csproj", "src/clients/KvadoClient/"]
+COPY ["src/clients/OrientClient/OrientClient.csproj", "src/clients/OrientClient/"]
 COPY ["src/UtilityBills.Application/UtilityBills.Application.csproj", "src/UtilityBills.Application/"]
 COPY ["src/UtilityBills/UtilityBills.csproj", "src/UtilityBills/"]
 COPY ["src/UtilityBills.Aspire.AppHost/UtilityBills.Aspire.AppHost.ServiceDefaults/UtilityBills.Aspire.AppHost.ServiceDefaults.csproj", "src/UtilityBills.Aspire.AppHost/UtilityBills.Aspire.AppHost.ServiceDefaults/"]
