@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\invest-manager\src\InvestManager.Host\InvestManager.Host.csproj" />
       <ProjectReference Include="..\clients\KvadoClient\KvadoClient.csproj" />
       <ProjectReference Include="..\clients\OrientClient\OrientClient.csproj" />
       <ProjectReference Include="..\UtilityBills.Application\UtilityBills.Application.csproj" />
@@ -39,6 +38,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="TelegramBotCommandFramework" Version="1.0.0.1" />
     </ItemGroup>
 
 </Project>

@@ -1,10 +1,10 @@
 using FluentResults;
-using InvestManager.Host.Telegram.Abstractions;
-using InvestManager.Host.Telegram.Attributes;
-using InvestManager.Host.Telegram.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramBotCommandFramework.Abstractions;
+using TelegramBotCommandFramework.Attributes;
+using TelegramBotCommandFramework.Extensions;
 using UtilityBills.Abstractions;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.Entities;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.Models;

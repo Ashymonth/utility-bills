@@ -1,7 +1,7 @@
-using InvestManager.Host.Telegram.Extensions;
-using InvestManager.Host.Telegram.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using TelegramBotCommandFramework.Extensions;
+using TelegramBotCommandFramework.Services;
 
 namespace UtilityBills.Host.Commands;
 

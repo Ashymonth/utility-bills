@@ -1,9 +1,9 @@
-using InvestManager.Host.Telegram.Abstractions;
-using InvestManager.Host.Telegram.Attributes;
-using InvestManager.Host.Telegram.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBotCommandFramework.Abstractions;
+using TelegramBotCommandFramework.Attributes;
+using TelegramBotCommandFramework.Extensions;
 using UtilityBills.Aggregates;
 using UtilityBills.Aggregates.ReadingPlatformAggregate;
 using UtilityBills.Aggregates.ReadingPlatformAggregate.Services;

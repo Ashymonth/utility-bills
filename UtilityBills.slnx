@@ -15,5 +15,4 @@
     <Project Path="src/clients\OrientClient\OrientClient.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/tests/" />
-  <Project Path="..\invest-manager\src\InvestManager.Host\InvestManager.Host.csproj" Type="Classic C#" />
 </Solution>
