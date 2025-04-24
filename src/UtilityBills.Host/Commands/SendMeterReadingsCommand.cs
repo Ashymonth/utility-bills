@@ -94,7 +94,7 @@ public class SendMeterReadingsCommand : ITelegramCommand
         Result<MeterReadingsPair> previousMeterReadings, CancellationToken ct)
     {
         return await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
-            "Введите показания <b>горячей</b> воды\n" +
+            "Введите показания <b>холодной</b> воды\n" +
             $"Предыдущие показания: {previousMeterReadings.Value.HotWater.Value}", bot, ct);
     }
 
