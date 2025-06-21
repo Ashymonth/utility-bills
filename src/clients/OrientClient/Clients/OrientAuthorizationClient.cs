@@ -41,9 +41,12 @@ internal class OrientAuthorizationClient : IOrientAuthorizationClient
 
         string[] cookie = loginPageResponse.Headers.GetValues(CookieHeaderKey).ToArray();
 
-        string token = new LoginPageParser().GetCsrfToken(loginPage);
+        var parser = new LoginPageParser();
+        string token = parser.GetCsrfToken(loginPage);
 
-        using var loginRequest = CreateLoginRequest(email, password, token, cookie);
+        var captchaToken = parser.GetDefaultCaptchaToken(loginPage); 
+
+        using var loginRequest = CreateLoginRequest(email, password, token,captchaToken, cookie);
 
         string accountPage = await LoginAsync(loginRequest, ct); // will redirect to account page on success.
 
@@ -68,14 +71,17 @@ internal class OrientAuthorizationClient : IOrientAuthorizationClient
     private static HttpRequestMessage CreateLoginRequest(string email,
         string password,
         string token,
+        string captchaToken,
         IEnumerable<string> cookie)
     {
-        var content = new FormUrlEncodedContent(new[]
-        {
+        var content = new FormUrlEncodedContent([
             new KeyValuePair<string, string>("login", email),
             new KeyValuePair<string, string>("password", password),
-            new KeyValuePair<string, string>("_token", token)
-        });
+            new KeyValuePair<string, string>("_token", token),
+            new KeyValuePair<string, string>("default-captcha-response", captchaToken),
+            new KeyValuePair<string, string>("page-code", "authorization"),
+            new KeyValuePair<string, string>("agreement", "on")
+        ]);
 
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/login");
 
