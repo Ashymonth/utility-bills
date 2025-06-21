@@ -33,9 +33,20 @@ public class MeterReadingsService : IMeterReadingsService
     public async Task<Result<MeterReadingsPair>> GetPreviousReadingsAsync(string userId,
         CancellationToken ct = default)
     {
-        var result = await GetMeterReadingsAsync(userId, RequestReadingType.Previous, ct);
+        var previous = await GetMeterReadingsAsync(userId, RequestReadingType.Previous, ct);
 
-        return result;
+        var current = await GetMeterReadingsAsync(userId, RequestReadingType.Current, ct);
+
+        // for case when user already sent the new meter readings and he can't send meter readings greater than that
+        var coldWater = current.Value.ColdWater.Value > previous.Value.ColdWater.Value
+            ? current.Value.ColdWater
+            : previous.Value.ColdWater;
+
+        var hotWater = current.Value.HotWater.Value > previous.Value.HotWater.Value
+            ? current.Value.HotWater
+            : previous.Value.HotWater;
+
+        return Result.Ok(MeterReadingsPair.Create(hotWater, coldWater));
     }
 
     public async Task<Result> SendReadingsAsync(string userId, MeterReadings hotWater, MeterReadings coldWater,
@@ -44,7 +55,8 @@ public class MeterReadingsService : IMeterReadingsService
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
         ArgumentNullException.ThrowIfNull(hotWater);
 
-        await ExecutePlatformActionAsync(userId, async (platform, credential, token) =>
+        await ExecutePlatformActionAsync(userId,
+            async (platform, credential, token) =>
             {
                 await SendReadingsAsync(platform, credential, hotWater, coldWater, token);
             }, ct);
