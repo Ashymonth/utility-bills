@@ -95,7 +95,7 @@ public class SendMeterReadingsCommand : ITelegramCommand
     {
         return await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
             "Введите показания <b>холодной</b> воды\n" +
-            $"Предыдущие показания: {previousMeterReadings.Value.HotWater.Value}", bot, ct);
+            $"Предыдущие показания: {previousMeterReadings.Value.ColdWater.Value}", bot, ct);
     }
 
     private static async Task<MeterReadings> RequestWaterMeterReadingsAsync(long userId,

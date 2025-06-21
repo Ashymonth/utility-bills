@@ -10,9 +10,9 @@ public class MeterReadingsPair
 
     public MeterReadings HotWater { get; private set; } = null!;
 
-    public MeterReadings? ColdWater { get; private set; }
+    public MeterReadings ColdWater { get; private set; }
 
-    public static MeterReadingsPair Create(MeterReadings hotWater, MeterReadings? coldWater)
+    public static MeterReadingsPair Create(MeterReadings hotWater, MeterReadings coldWater)
     {
         return new MeterReadingsPair
         {
