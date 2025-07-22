@@ -66,7 +66,7 @@ internal class KvadoProvider : IKvadoProvider
         }
     }
 
-    public async Task<Result<MeterReadingsPair>> GetPreviousMeterReadingsAsync(Email email, Password password,
+    public async Task<Result<MeterReadingsPair?>> GetPreviousMeterReadingsAsync(Email email, Password password,
         CancellationToken ct = default)
     {
         try
@@ -91,7 +91,7 @@ internal class KvadoProvider : IKvadoProvider
         }
     }
     
-    public async Task<Result<MeterReadingsPair>> GetCurrentMeterReadingsAsync(Email email, Password password,
+    public async Task<Result<MeterReadingsPair?>?> GetCurrentMeterReadingsAsync(Email email, Password password,
         CancellationToken ct = default)
     {
         try
@@ -99,6 +99,11 @@ internal class KvadoProvider : IKvadoProvider
             var result = await _kvadoHttpClient.GetCurrentMeterReadingsAsync(email.Value,
                 password.GetUnprotected(_passwordProtector), ct);
 
+            if (result is null)
+            {
+                return null;
+            }
+            
             var hotWater = MeterReadings.Create(result.HotWater);
             var coldWater = MeterReadings.Create(result.ColdWater);
 

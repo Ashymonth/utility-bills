@@ -20,7 +20,7 @@ public class GetPreviousMeterReadingsStep : IUserStep, IStepBody
 
     public List<int> SentMessageIds { get; set; } = [];
 
-    public Result<MeterReadingsPair> PreviousMeterReadings { get; set; } = null!;
+    public Result<MeterReadingsPair?> PreviousMeterReadings { get; set; } = null!;
 
     public async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {

@@ -5,7 +5,7 @@ namespace KvadoClient.Parsers;
 
 public class PreviousMeterReadingsParser
 {
-    public MeterReadings ParseCurrentMeterReadings(string page)
+    public MeterReadings? ParseCurrentMeterReadings(string page)
     {
         var document = new HtmlDocument();
         document.LoadHtml(page);
@@ -15,7 +15,12 @@ public class PreviousMeterReadingsParser
         var coldWater = GetCurrentMeterReadings(counterRows[0]);
         var hotWaterWater = GetCurrentMeterReadings(counterRows[1]);
 
-        return new MeterReadings { ColdWater = coldWater, HotWater = hotWaterWater };
+        if (coldWater is null || hotWaterWater is null)
+        {
+            return null;
+        }
+
+        return new MeterReadings { ColdWater = coldWater.Value, HotWater = hotWaterWater.Value };
     }
     
     public MeterReadings ParsePreviousMeterReadings(string page)
@@ -69,7 +74,7 @@ public class PreviousMeterReadingsParser
         return int.Parse(MeterReadings[..spaceIndex]);
     }
     
-    private static int GetCurrentMeterReadings(HtmlNode MeterReadingsRow)
+    private static int? GetCurrentMeterReadings(HtmlNode MeterReadingsRow)
     {
         var MeterReadings = MeterReadingsRow.Descendants("td")
             ?.Skip(2)
@@ -84,7 +89,7 @@ public class PreviousMeterReadingsParser
 
         if (string.IsNullOrWhiteSpace(MeterReadings))
         {
-            throw new Exception("Cold water meter reading not found");
+            return null;
         }
 
         return int.Parse(MeterReadings);

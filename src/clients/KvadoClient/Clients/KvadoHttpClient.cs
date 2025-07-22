@@ -36,7 +36,7 @@ public interface IKvadoHttpClient
     Task<MeterReadings> GetPreviousMeterReadingsAsync(string email, string password,
         CancellationToken ct = default);
 
-    Task<MeterReadings> GetCurrentMeterReadingsAsync(string email, string password,
+    Task<MeterReadings?> GetCurrentMeterReadingsAsync(string email, string password,
         CancellationToken ct = default);
 }
 
@@ -85,7 +85,7 @@ public class KvadoHttpClient : IKvadoHttpClient
         return new DebtParser().ParseDebt(content);
     }
 
-    public async Task<MeterReadings> GetCurrentMeterReadingsAsync(string email, string password,
+    public async Task<MeterReadings?> GetCurrentMeterReadingsAsync(string email, string password,
         CancellationToken ct = default)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, "/counters");

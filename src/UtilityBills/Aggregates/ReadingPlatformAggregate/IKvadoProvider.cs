@@ -12,9 +12,9 @@ public interface IKvadoProvider : IDebtProvider
     Task<Result> SendMeterReadingsAsync(Email email, Password password, MeterReadings hotWater,
         MeterReadings coldWater, CancellationToken ct = default);
 
-    Task<Result<MeterReadingsPair>> GetPreviousMeterReadingsAsync(
+    Task<Result<MeterReadingsPair?>> GetPreviousMeterReadingsAsync(
         Email email, Password password, CancellationToken ct = default);
     
-    Task<Result<MeterReadingsPair>> GetCurrentMeterReadingsAsync(Email email, Password password,
+    Task<Result<MeterReadingsPair?>?> GetCurrentMeterReadingsAsync(Email email, Password password,
         CancellationToken ct = default);
 }

@@ -77,7 +77,7 @@ internal class OrientProvider : IOrientProvider
         }
     }
 
-    public async Task<Result<MeterReadingsPair>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
+    public async Task<Result<MeterReadingsPair?>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
         CancellationToken ct = default)
     {
         try

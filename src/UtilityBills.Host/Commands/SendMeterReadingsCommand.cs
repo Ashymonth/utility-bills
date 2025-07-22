@@ -83,7 +83,7 @@ public class SendMeterReadingsCommand : ITelegramCommand
     }
 
     private static async Task<MeterReadings> RequestHotWaterAsync(ITelegramBotClient bot, long userId,
-        Result<MeterReadingsPair> previousMeterReadings, CancellationToken ct)
+        Result<MeterReadingsPair?> previousMeterReadings, CancellationToken ct)
     {
         return await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
             "Введите показания <b>горячей</b> воды\n" +
@@ -91,7 +91,7 @@ public class SendMeterReadingsCommand : ITelegramCommand
     }
     
     private static async Task<MeterReadings> RequestColdWaterAsync(ITelegramBotClient bot, long userId,
-        Result<MeterReadingsPair> previousMeterReadings, CancellationToken ct)
+        Result<MeterReadingsPair?> previousMeterReadings, CancellationToken ct)
     {
         return await RequestWaterMeterReadingsAsync(userId, previousMeterReadings.Value.HotWater,
             "Введите показания <b>холодной</b> воды\n" +

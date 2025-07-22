@@ -15,6 +15,6 @@ public interface IOrientProvider : IDebtProvider
     Task<Result<DateOnly>> GetLastDayWhenMeterReadingsWereSent(Email email, Password password,
         CancellationToken ct = default);
     
-    Task<Result<MeterReadingsPair>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
+    Task<Result<MeterReadingsPair?>> GetPreviousWaterMeterReadingAsync(Email email, Password password,
         CancellationToken ct = default);
 }

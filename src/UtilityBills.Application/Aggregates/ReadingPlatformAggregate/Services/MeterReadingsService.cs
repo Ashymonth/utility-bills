@@ -22,7 +22,7 @@ public class MeterReadingsService : IMeterReadingsService
         _kvadoProvider = kvadoProvider;
     }
 
-    public async Task<Result<MeterReadingsPair>> GetCurrentReadingsAsync(string userId,
+    public async Task<Result<MeterReadingsPair?>> GetCurrentReadingsAsync(string userId,
         CancellationToken ct = default)
     {
         var result = await GetMeterReadingsAsync(userId, RequestReadingType.Current, ct);
@@ -30,7 +30,7 @@ public class MeterReadingsService : IMeterReadingsService
         return result;
     }
 
-    public async Task<Result<MeterReadingsPair>> GetPreviousReadingsAsync(string userId,
+    public async Task<Result<MeterReadingsPair?>> GetPreviousReadingsAsync(string userId,
         CancellationToken ct = default)
     {
         var previous = await GetMeterReadingsAsync(userId, RequestReadingType.Previous, ct);
@@ -38,13 +38,13 @@ public class MeterReadingsService : IMeterReadingsService
         var current = await GetMeterReadingsAsync(userId, RequestReadingType.Current, ct);
 
         // for case when user already sent the new meter readings and he can't send meter readings greater than that
-        var coldWater = current.Value.ColdWater.Value > previous.Value.ColdWater.Value
+        var coldWater = current.Value?.ColdWater?.Value > previous.Value?.ColdWater.Value
             ? current.Value.ColdWater
-            : previous.Value.ColdWater;
+            : previous.Value!.ColdWater;
 
-        var hotWater = current.Value.HotWater.Value > previous.Value.HotWater.Value
+        var hotWater = current.Value?.HotWater.Value > previous.Value?.HotWater?.Value
             ? current.Value.HotWater
-            : previous.Value.HotWater;
+            : previous.Value!.HotWater!;
 
         return Result.Ok(MeterReadingsPair.Create(hotWater, coldWater));
     }
@@ -64,7 +64,7 @@ public class MeterReadingsService : IMeterReadingsService
         return Result.Ok();
     }
 
-    private async Task<Result<MeterReadingsPair>> GetMeterReadingsAsync(string userId,
+    private async Task<Result<MeterReadingsPair?>> GetMeterReadingsAsync(string userId,
         RequestReadingType requestReadingType, CancellationToken ct = default)
     {
         var result = new ConcurrentBag<MeterReadingsPair>();
@@ -77,18 +77,24 @@ public class MeterReadingsService : IMeterReadingsService
                 _ => throw new ArgumentOutOfRangeException(nameof(requestReadingType), requestReadingType, null)
             };
 
+            if (readings is null)
+            {
+                return;
+            }
+
             result.Add(readings);
         }, ct);
 
         var maxHotWater = result.MaxBy(pair => pair.HotWater.Value);
-        var maxColdWater = result.MaxBy(pair => pair.ColdWater?.Value);
+        var maxColdWater = result.Where(pair => pair.ColdWater is not null).MaxBy(pair => pair.ColdWater.Value);
 
         if (maxHotWater is null)
         {
             return Result.Fail("Unable to get hot water");
         }
 
-        return Result.Ok(MeterReadingsPair.Create(maxHotWater.HotWater, maxColdWater?.ColdWater));
+        return Result.Ok(MeterReadingsPair.Create(maxHotWater.HotWater,
+            maxColdWater is not null ? maxColdWater.ColdWater : null));
     }
 
     private async Task ExecutePlatformActionAsync(string userId,
@@ -141,7 +147,7 @@ public class MeterReadingsService : IMeterReadingsService
     }
 
 
-    private async Task<MeterReadingsPair> GetCurrentReadingsAsync(
+    private async Task<MeterReadingsPair?> GetCurrentReadingsAsync(
         ReadingPlatform platform,
         ReadingPlatformCredential credential,
         CancellationToken ct)
@@ -149,7 +155,7 @@ public class MeterReadingsService : IMeterReadingsService
         return platform.PlatformType switch
         {
             ReadingPlatformType.Kvado => (await _kvadoProvider.GetCurrentMeterReadingsAsync(
-                credential.Email, credential.Password, ct)).Value,
+                credential.Email, credential.Password, ct))?.Value,
             ReadingPlatformType.Orient => (await _orientProvider.GetPreviousWaterMeterReadingAsync(
                 credential.Email, credential.Password, ct)).Value,
             ReadingPlatformType.RusEnergy => throw new NotSupportedException(),
@@ -157,7 +163,7 @@ public class MeterReadingsService : IMeterReadingsService
         };
     }
 
-    private async Task<MeterReadingsPair> GetPreviousReadingsAsync(
+    private async Task<MeterReadingsPair?> GetPreviousReadingsAsync(
         ReadingPlatform platform,
         ReadingPlatformCredential credential,
         CancellationToken ct)
